@@ -18,6 +18,7 @@
 #include "ABEWindow.h"
 
 #include <iostream>
+#include <stdexcept>
 
 #define DEFAULT_ANTI_ALIASING_RATE 4 // x4
 #define DEFAULT_GL_VERSION_MAJOR 3
@@ -31,6 +32,8 @@ ABEWindow::ABEWindow(int width, int height,
                      std::string title,
                      GLFWmonitor *monitor,
                      GLFWwindow *share) {
+    mQuitSignal = false;
+
     // Initialise GLFW.
     if (glfwInit() == 0) {
         throw invalid_argument("Failed to initialise GLFW!\n");

@@ -44,9 +44,9 @@ class ABEWindow {
     void start();
     void setQuit(bool quit = true);
  private:
-    GLFWwindow* mWindow = nullptr;
+    GLFWwindow* mWindow;
     // TODO(Hao): BG Queue.
-    bool mQuitSignal = false;
+    bool mQuitSignal;
 
     void doRendering();
 };
