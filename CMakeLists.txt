@@ -25,7 +25,6 @@ add_subdirectory(external)
 
 include_directories(
         external/glfw-3.1.2/include/GLFW/
-        external/glm-0.9.7.1/
         external/glew-1.13.0/include/
         ./include/
 )
@@ -35,10 +34,30 @@ set(ALL_LIBS
         glfw
         GLEW_1130)
 
-# Build for Test Window.
-add_executable(test_window
-        src/test_window.cpp
-        )
-target_link_libraries(test_window
-        ${ALL_LIBS}
-        )
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++1z" COMPILER_SUPPORTS_CXX1Z)
+if(COMPILER_SUPPORTS_CXX1Z)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
+elseif(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+elseif(COMPILER_SUPPORTS_CXX0X)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+else()
+    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
+
+# Build for ABEGE Lib.
+add_library(abege
+        src/ABEWindow.cpp)
+target_link_libraries(abege
+        ${ALL_LIBS})
+
+# Build Empty Window Example.
+add_executable(EmptyWindow
+        example/EmptyWindow/EmptyWindow.cpp)
+add_dependencies(EmptyWindow abege)
+target_link_libraries(EmptyWindow
+        abege
+        ${ALL_LIBS})
