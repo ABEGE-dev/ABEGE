@@ -4,7 +4,14 @@ branches:
     only:
         - master
 
+addons:
+    apt:
+        sources:
+            - george-edison55-precise-backports  # cmake 3.2.3
+        packages:
+            - cmake
 script:
+    - set -e
     - mkdir build
     - cd build
     - cmake ..
