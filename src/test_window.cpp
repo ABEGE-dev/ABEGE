@@ -25,7 +25,7 @@ GLFWwindow* window;
 int main()
 {
     // Initialise GLFW
-    if(!glfwInit())
+    if(not glfwInit())
     {
         fprintf( stderr, "Failed to initialize GLFW\n" );
         getchar();
