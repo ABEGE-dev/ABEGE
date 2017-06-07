@@ -26,7 +26,7 @@ add_subdirectory(external)
 include_directories(
         external/glfw-3.1.2/include/GLFW/
         external/glew-1.13.0/include/
-        ./include/
+        include/
 )
 
 set(ALL_LIBS
@@ -47,6 +47,10 @@ elseif(COMPILER_SUPPORTS_CXX0X)
 else()
     message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
+
+add_definitions(
+	-DGLEW_STATIC
+)
 
 # Build for ABEGE Lib.
 add_library(abege
