@@ -46,7 +46,7 @@ class ABEWindow {
  private:
     GLFWwindow* mWindow;
     // TODO(Hao): BG Queue.
-    bool mQuitSignal;
+    bool mQuitSignal = false;
 
     void doRendering();
 };

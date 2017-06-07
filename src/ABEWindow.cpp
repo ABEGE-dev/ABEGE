@@ -32,8 +32,6 @@ ABEWindow::ABEWindow(int width, int height,
                      std::string title,
                      GLFWmonitor *monitor,
                      GLFWwindow *share) {
-    mQuitSignal = false;
-
     // Initialise GLFW.
     if (glfwInit() == 0) {
         throw invalid_argument("Failed to initialise GLFW!\n");
