@@ -4,10 +4,9 @@ image:
 build_script:
     - mkdir build
     - cd build
-    - cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Debug ..
+    - cmake -G "Visual Studio 15 2017 Win64" ..
 
 build:
-    project: C:\projects\ABEGE\build\ABEGE.sln
+    project: ABEGE.sln
     parallel: true
     verbosity: detailed
-
