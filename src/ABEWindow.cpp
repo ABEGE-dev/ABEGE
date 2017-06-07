@@ -18,7 +18,6 @@
 #include "ABEWindow.h"
 
 #include <iostream>
-#include <stdexcept>
 
 #define DEFAULT_ANTI_ALIASING_RATE 4 // x4
 #define DEFAULT_GL_VERSION_MAJOR 3
@@ -28,7 +27,7 @@ using std::invalid_argument;
 
 using abege::ABEWindow;
 
-ABEWindow::ABEWindow(int width, int height,
+void ABEWindow::init(int width, int height,
                      std::string title,
                      GLFWmonitor *monitor,
                      GLFWwindow *share) {
@@ -50,12 +49,25 @@ ABEWindow::ABEWindow(int width, int height,
     }
 
     glfwMakeContextCurrent(mWindow);
-
     // Initialize GLEW.
     if (glewInit() != GLEW_OK) {
         throw invalid_argument("Failed to initialize GLEW!\n");
     }
+}
 
+ABEWindow::ABEWindow(int width, int height, std::string title) throw(invalid_argument) {
+    init(width, height, title, nullptr, nullptr);
+}
+
+ABEWindow::ABEWindow() throw(invalid_argument) {
+    init(DEFAULT_WINDOW_SIZE_WIDTH, DEFAULT_WINDOW_SIZE_HEIGHT, "", glfwGetPrimaryMonitor(), nullptr);
+}
+
+ABEWindow::~ABEWindow() {
+    glfwTerminate();
+}
+
+void ABEWindow::start() {
     // Dark background.
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -68,22 +80,6 @@ ABEWindow::ABEWindow(int width, int height,
         glfwSwapBuffers(mWindow);
         glfwPollEvents();
     }
-}
-
-ABEWindow::ABEWindow(int width, int height, std::string title) {
-    ABEWindow(width, height, title, nullptr, nullptr);
-}
-
-ABEWindow::ABEWindow() {
-    ABEWindow(DEFAULT_WINDOW_SIZE_WIDTH, DEFAULT_WINDOW_SIZE_HEIGHT, "", glfwGetPrimaryMonitor(), nullptr);
-}
-
-ABEWindow::~ABEWindow() {
-    glfwTerminate();
-}
-
-void ABEWindow::start() {
-
 }
 
 void ABEWindow::doRendering() {

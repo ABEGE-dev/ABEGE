@@ -16,7 +16,6 @@
 */
 
 #include <iostream>
-#include <stdexcept>
 
 #include "ABEWindow.h"
 
@@ -32,7 +31,10 @@ int main() {
         cerr << "Failed to initialise ABEWindow: " << e.what() << "\n";
         return -1;
     }
+
     myWindow->start();
+
+    delete myWindow;
 
     return 0;
 }

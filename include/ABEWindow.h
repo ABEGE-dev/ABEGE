@@ -21,7 +21,9 @@
 #define DEFAULT_WINDOW_SIZE_WIDTH  1024
 #define DEFAULT_WINDOW_SIZE_HEIGHT 768
 
+#include <stdexcept>
 #include <string>
+#include <vector>
 
 #include <GL/glew.h>
 #include <glfw3.h>
@@ -30,23 +32,22 @@ namespace abege {
 
 class ABEWindow {
  public:
-    ABEWindow(int width, int height, std::string title); // Create a windowed window.
-    ABEWindow(); // Create a full screen window.
-
-    ABEWindow(int width, int height,
-              std::string title,
-              GLFWmonitor *monitor,
-              GLFWwindow *share); // Base constructor.
+    ABEWindow(int width, int height, std::string title) throw(std::invalid_argument); // Create a windowed window.
+    ABEWindow() throw(std::invalid_argument); // Create a full screen window.
 
     ~ABEWindow();
 
     void start();
     void setQuit(bool quit = true);
  private:
-    GLFWwindow* mWindow = nullptr;
+    GLFWwindow *mWindow = nullptr;
     // TODO(Hao): BG Queue.
     bool mQuitSignal = false;
 
+    void init(int width, int height,
+              std::string title,
+              GLFWmonitor *monitor,
+              GLFWwindow *share); // Base constructor.
     void doRendering();
 };
 
