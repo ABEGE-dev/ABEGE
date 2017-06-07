@@ -58,10 +58,10 @@ add_library(abege
 target_link_libraries(abege
         ${ALL_LIBS})
 
-# Build Empty Window Example.
-add_executable(EmptyWindow
-        example/EmptyWindow/EmptyWindow.cpp)
-add_dependencies(EmptyWindow abege)
-target_link_libraries(EmptyWindow
+# Build Simple Example.
+add_executable(SimpleExample
+        example/SimpleExample/SimpleExample.cpp)
+add_dependencies(SimpleExample abege)
+target_link_libraries(SimpleExample
         abege
         ${ALL_LIBS})
