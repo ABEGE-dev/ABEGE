@@ -18,6 +18,7 @@
 #include "ABEWindow.h"
 
 #include <iostream>
+#include <stdexcept>
 
 #define DEFAULT_ANTI_ALIASING_RATE 4 // x4
 #define DEFAULT_GL_VERSION_MAJOR 3
