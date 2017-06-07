@@ -24,15 +24,15 @@ find_package(OpenGL REQUIRED)
 add_subdirectory(external)
 
 include_directories(
-        external/glfw-3.1.2/include/GLFW/
-        external/glew-1.13.0/include/
+        external/glfw-3.2.1/include/GLFW/
+        external/glew-2.0.0/include/
         include/
 )
 
 set(ALL_LIBS
         ${OPENGL_LIBRARY}
         glfw
-        GLEW_1130)
+        GLEW_200)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
