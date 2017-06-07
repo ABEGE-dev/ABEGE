@@ -26,11 +26,12 @@
 using std::invalid_argument;
 
 using abege::ABEWindow;
+using abege::ABEVideoOptions;
 
-void ABEWindow::init(int width, int height,
-                     std::string title,
-                     GLFWmonitor *monitor,
-                     GLFWwindow *share) {
+void ABEWindow::init(std::string title) throw(std::invalid_argument) {
+    int screenWidth = mVideoOptions->getScreenResolutionWidth();
+    int screenHeight = mVideoOptions->getScreenResolutionHeight();
+
     // Initialise GLFW.
     if (glfwInit() == 0) {
         throw invalid_argument("Failed to initialise GLFW!\n");
@@ -43,7 +44,10 @@ void ABEWindow::init(int width, int height,
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Open a window and create its OpenGL context.
-    mWindow = glfwCreateWindow(width, height, title.c_str(), monitor, share);
+    mWindow = glfwCreateWindow(screenWidth, screenHeight,
+                               title.c_str(),
+                               mVideoOptions->getFullscreen() ? glfwGetPrimaryMonitor() : nullptr,
+                               nullptr);
     if (mWindow == NULL) {
         throw invalid_argument("Failed to open GLFW window!\n");
     }
@@ -53,14 +57,20 @@ void ABEWindow::init(int width, int height,
     if (glewInit() != GLEW_OK) {
         throw invalid_argument("Failed to initialize GLEW!\n");
     }
+
+    glViewport(0, 0, screenWidth, screenHeight);
+
+    glfwSetFramebufferSizeCallback(mWindow, framebufferSizeChangedCallback);
 }
 
-ABEWindow::ABEWindow(int width, int height, std::string title) throw(invalid_argument) {
-    init(width, height, title, nullptr, nullptr);
+ABEWindow::ABEWindow(std::string title) throw(invalid_argument) {
+    init(title);
 }
 
-ABEWindow::ABEWindow() throw(invalid_argument) {
-    init(DEFAULT_WINDOW_SIZE_WIDTH, DEFAULT_WINDOW_SIZE_HEIGHT, "", glfwGetPrimaryMonitor(), nullptr);
+ABEWindow::ABEWindow(std::string title, int width, int height, bool fullscreen) throw(std::invalid_argument) {
+    mVideoOptions->setScreenResolution(width, height);
+    mVideoOptions->setFullscreen(fullscreen);
+    init(title);
 }
 
 ABEWindow::~ABEWindow() {
@@ -84,4 +94,11 @@ void ABEWindow::start() {
 
 void ABEWindow::doRendering() {
 
+}
+
+// Callbacks.
+
+void ABEWindow::framebufferSizeChangedCallback(GLFWwindow */*window*/,
+                                               const int width, const int height) {
+    glViewport(0, 0, width, height);
 }
