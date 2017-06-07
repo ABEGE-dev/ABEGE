@@ -15,28 +15,32 @@
  * limitations under the License.
 */
 
-#include <iostream>
+#ifndef ABEGE_ABESCENECONTROLLER_H
+#define ABEGE_ABESCENECONTROLLER_H
 
-#include "ABEWindow.h"
+#include <vector>
 
-using std::cerr;
+#include "ABEObject.h"
 
-using abege::ABESceneController;
-using abege::ABEWindow;
+namespace abege {
 
-int main() {
-    ABEWindow *myWindow = nullptr;
-    try {
-        myWindow = new ABEWindow("SimpleExample");
-    } catch(std::invalid_argument &e) {
-        cerr << "Failed to initialise ABEWindow: " << e.what() << "\n";
-        return -1;
-    }
+class ABEWindow;
 
-    ABESceneController *entrySceneController = new ABESceneController(myWindow, "Entry Scene");
-    myWindow->start(entrySceneController);
+class ABESceneController {
+ public:
+    ABESceneController(ABEWindow *window, std::string name);
+    ~ABESceneController() {}
 
-    delete myWindow;
+    void addObject(ABEObject *obj);
 
-    return 0;
-}
+    void renderAll();
+
+ private:
+    ABEWindow *mWindow;
+    std::string mName;
+    std::vector<ABEObject *> mObjectContainer = {};
+};
+
+} // namespace abege.
+
+#endif //ABEGE_ABESCENECONTROLLER_H
