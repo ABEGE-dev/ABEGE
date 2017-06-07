@@ -18,6 +18,7 @@
 #include "ABESceneController.h"
 
 using abege::ABESceneController;
+using abege::ABEWindow;
 
 ABESceneController::ABESceneController(ABEWindow *window, std::string name) :
         mWindow(window), mName(name) {}
