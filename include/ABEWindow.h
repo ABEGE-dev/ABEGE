@@ -21,7 +21,6 @@
 #define DEFAULT_WINDOW_SIZE_WIDTH  1024
 #define DEFAULT_WINDOW_SIZE_HEIGHT 768
 
-
 #include <string>
 
 #include <GL/glew.h>
@@ -44,9 +43,9 @@ class ABEWindow {
     void start();
     void setQuit(bool quit = true);
  private:
-    GLFWwindow* mWindow;
+    GLFWwindow* mWindow = nullptr;
     // TODO(Hao): BG Queue.
-    bool mQuitSignal;
+    bool mQuitSignal = false;
 
     void doRendering();
 };
