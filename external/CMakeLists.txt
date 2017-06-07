@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 2.6)
 
 # Build for GLFW.
 
-add_subdirectory (glfw-3.1.2)
+add_subdirectory (glfw-3.2.1)
 
 include_directories(
-        glfw-3.1.2/include/GLFW/
+        glfw-3.2.1/include/GLFW/
         glew-1.13.0/include/
 )
 
@@ -30,7 +30,6 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 set(GLEW_SOURCE glew-1.13.0/src/glew.c)
 
 set(GLEW_HEADERS)
-
 
 add_library(GLEW_1130 STATIC
         ${GLEW_SOURCE}
