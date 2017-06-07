@@ -15,28 +15,33 @@
  * limitations under the License.
 */
 
-#include <iostream>
+#ifndef ABEGE_ABEOBJECT_H
+#define ABEGE_ABEOBJECT_H
 
-#include "ABEWindow.h"
+#include <string>
+#include <utility>
+#include <vector>
 
-using std::cerr;
+namespace abege {
 
-using abege::ABESceneController;
-using abege::ABEWindow;
+class ABEObject {
+ public:
+    ABEObject(std::string name) : mName(name) {}
 
-int main() {
-    ABEWindow *myWindow = nullptr;
-    try {
-        myWindow = new ABEWindow("SimpleExample");
-    } catch(std::invalid_argument &e) {
-        cerr << "Failed to initialise ABEWindow: " << e.what() << "\n";
-        return -1;
-    }
+    virtual void render() = 0;
 
-    ABESceneController *entrySceneController = new ABESceneController(myWindow, "Entry Scene");
-    myWindow->start(entrySceneController);
+    // Position manipulation.
+    void setPosition(float x, float y);
+    void pushPosition(float x, float y);
+    std::pair<float, float> popPosition();
 
-    delete myWindow;
+ private:
+    std::string mName;
+    // TODO(Wa): add texture.
+    // TODO(Wa): add shape(for collision detection).
+    std::vector<std::pair<float, float>> mPositionStack = {std::make_pair(0.0, 0.0)};
+};
 
-    return 0;
-}
+} // namespace abege.
+
+#endif //ABEGE_ABEOBJECT_H

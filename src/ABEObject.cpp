@@ -15,28 +15,27 @@
  * limitations under the License.
 */
 
-#include <iostream>
+#include "ABEObject.h"
 
-#include "ABEWindow.h"
+using std::make_pair;
+using std::pair;
 
-using std::cerr;
+using abege::ABEObject;
 
-using abege::ABESceneController;
-using abege::ABEWindow;
+void ABEObject::render() {
+    // TODO(Wa): Add render function here.
+}
 
-int main() {
-    ABEWindow *myWindow = nullptr;
-    try {
-        myWindow = new ABEWindow("SimpleExample");
-    } catch(std::invalid_argument &e) {
-        cerr << "Failed to initialise ABEWindow: " << e.what() << "\n";
-        return -1;
-    }
+void ABEObject::setPosition(float x, float y) {
+    mPositionStack.back() = make_pair(x, y);
+}
 
-    ABESceneController *entrySceneController = new ABESceneController(myWindow, "Entry Scene");
-    myWindow->start(entrySceneController);
+void ABEObject::pushPosition(float x, float y) {
+    mPositionStack.push_back(make_pair(x, y));
+}
 
-    delete myWindow;
-
-    return 0;
+pair<float, float> ABEObject::popPosition() {
+    auto returnPair = mPositionStack.back();
+    mPositionStack.pop_back();
+    return returnPair;
 }

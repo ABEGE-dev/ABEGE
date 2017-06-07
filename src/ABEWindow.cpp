@@ -44,15 +44,15 @@ void ABEWindow::init(std::string title) throw(std::invalid_argument) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Open a window and create its OpenGL context.
-    mWindow = glfwCreateWindow(screenWidth, screenHeight,
+    mGLFWwindow = glfwCreateWindow(screenWidth, screenHeight,
                                title.c_str(),
                                mVideoOptions->getFullscreen() ? glfwGetPrimaryMonitor() : nullptr,
                                nullptr);
-    if (mWindow == NULL) {
+    if (mGLFWwindow == NULL) {
         throw invalid_argument("Failed to open GLFW window!\n");
     }
 
-    glfwMakeContextCurrent(mWindow);
+    glfwMakeContextCurrent(mGLFWwindow);
     // Initialize GLEW.
     if (glewInit() != GLEW_OK) {
         throw invalid_argument("Failed to initialize GLEW!\n");
@@ -60,7 +60,7 @@ void ABEWindow::init(std::string title) throw(std::invalid_argument) {
 
     glViewport(0, 0, screenWidth, screenHeight);
 
-    glfwSetFramebufferSizeCallback(mWindow, framebufferSizeChangedCallback);
+    glfwSetFramebufferSizeCallback(mGLFWwindow, framebufferSizeChangedCallback);
 }
 
 ABEWindow::ABEWindow(std::string title) throw(invalid_argument) {
@@ -75,30 +75,49 @@ ABEWindow::ABEWindow(std::string title, int width, int height, bool fullscreen) 
 
 ABEWindow::~ABEWindow() {
     glfwTerminate();
+    for (auto it = mSceneStack.begin(); it < mSceneStack.end(); ++it) {
+        delete *it;
+    }
 }
 
-void ABEWindow::start() {
+void ABEWindow::start(ABESceneController *initialSceneController) {
+    pushSceneController(initialSceneController);
+
     // Dark background.
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    while(mQuitSignal == 0 && glfwWindowShouldClose(mWindow) == 0) {
+    while(mQuitSignal == 0 && glfwWindowShouldClose(mGLFWwindow) == 0) {
         // Clear the screen.
         glClear(GL_COLOR_BUFFER_BIT);
 
         doRendering();
 
-        glfwSwapBuffers(mWindow);
+        glfwSwapBuffers(mGLFWwindow);
         glfwPollEvents();
     }
 }
 
 void ABEWindow::doRendering() {
+    mSceneStack.back()->renderAll();
+}
 
+// Scene Controller manipulations.
+
+void ABEWindow::pushSceneController(ABESceneController *sceneController) {
+    mSceneStack.push_back(sceneController);
+}
+
+void ABEWindow::setSceneController(ABESceneController *sceneController) {
+    mSceneStack.back() = sceneController;
+}
+
+void ABEWindow::popSceneController() {
+    mSceneStack.pop_back();
 }
 
 // Callbacks.
 
-void ABEWindow::framebufferSizeChangedCallback(GLFWwindow */*window*/,
+void ABEWindow::framebufferSizeChangedCallback(GLFWwindow */*GLFWwindow*/,
                                                const int width, const int height) {
     glViewport(0, 0, width, height);
 }

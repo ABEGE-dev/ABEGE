@@ -25,6 +25,7 @@
 #include <GL/glew.h>
 #include <glfw3.h>
 
+#include "ABESceneController.h"
 #include "ABEVideoOptions.h"
 
 namespace abege {
@@ -36,16 +37,21 @@ class ABEWindow {
 
     ~ABEWindow();
 
-    void start();
+    void start(ABESceneController *initialSceneController);
     void setQuit(bool quit = true);
  private:
-    GLFWwindow *mWindow = nullptr;
-    // TODO(Hao): BG Queue.
+    GLFWwindow *mGLFWwindow = nullptr;
+    std::vector<ABESceneController *> mSceneStack = {};
     bool mQuitSignal = false;
     ABEVideoOptions *mVideoOptions = new ABEVideoOptions();
 
     void init(std::string title) throw(std::invalid_argument); // Base constructor.
     void doRendering();
+
+    // Scene Controller manipulations.
+    void pushSceneController(ABESceneController *sceneController);
+    void setSceneController(ABESceneController *sceneController);
+    void popSceneController();
 
     // Callbacks.
     static void framebufferSizeChangedCallback(GLFWwindow *window,
