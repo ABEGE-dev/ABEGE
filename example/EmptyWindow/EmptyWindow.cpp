@@ -16,7 +16,6 @@
 */
 
 #include <iostream>
-#include <stdexcept>
 
 #include "ABEWindow.h"
 
