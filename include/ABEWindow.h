@@ -49,6 +49,10 @@ class ABEWindow {
               GLFWmonitor *monitor,
               GLFWwindow *share); // Base constructor.
     void doRendering();
+
+    // Callbacks.
+    static void framebufferSizeChangedCallback(GLFWwindow *window,
+                                               int width, int height);
 };
 
 } // Namespace abege.

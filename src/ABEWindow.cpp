@@ -31,6 +31,7 @@ void ABEWindow::init(int width, int height,
                      std::string title,
                      GLFWmonitor *monitor,
                      GLFWwindow *share) {
+    // TODO: Pass an option object as a parameter, extract info from it. Only "title" remains.
     // Initialise GLFW.
     if (glfwInit() == 0) {
         throw invalid_argument("Failed to initialise GLFW!\n");
@@ -53,6 +54,10 @@ void ABEWindow::init(int width, int height,
     if (glewInit() != GLEW_OK) {
         throw invalid_argument("Failed to initialize GLEW!\n");
     }
+
+    glViewport(0, 0, width, height);
+
+    glfwSetFramebufferSizeCallback(mWindow, framebufferSizeChangedCallback);
 }
 
 ABEWindow::ABEWindow(int width, int height, std::string title) throw(invalid_argument) {
@@ -84,4 +89,11 @@ void ABEWindow::start() {
 
 void ABEWindow::doRendering() {
 
+}
+
+// Callbacks.
+
+void ABEWindow::framebufferSizeChangedCallback(GLFWwindow */*window*/,
+                                               const int width, const int height) {
+    glViewport(0, 0, width, height);
 }
