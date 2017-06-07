@@ -21,7 +21,6 @@
 #define DEFAULT_WINDOW_SIZE_WIDTH  1024
 #define DEFAULT_WINDOW_SIZE_HEIGHT 768
 
-
 #include <string>
 
 #include <GL/glew.h>

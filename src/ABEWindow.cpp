@@ -59,7 +59,7 @@ ABEWindow::ABEWindow(int width, int height,
     // Dark background.
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    while(mQuitSignal == false && glfwWindowShouldClose(mWindow) == 0) {
+    while(mQuitSignal == 0 && glfwWindowShouldClose(mWindow) == 0) {
         // Clear the screen.
         glClear(GL_COLOR_BUFFER_BIT);
 
