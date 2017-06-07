@@ -26,7 +26,7 @@ using abege::ABEWindow;
 int main() {
     ABEWindow *myWindow = nullptr;
     try {
-        myWindow = new ABEWindow();
+        myWindow = new ABEWindow("SimpleExample");
     } catch(std::invalid_argument &e) {
         cerr << "Failed to initialise ABEWindow: " << e.what() << "\n";
         return -1;
