@@ -35,7 +35,7 @@ class ABEWindow;
 /**
  * Logger.
  */
-void LOG();
+inline void LOG() {}
 
 template<typename First, typename ...Rest>
 void LOG(First &&first, Rest &&...rest) {
@@ -62,7 +62,7 @@ inline std::string getCurrentTime() {
 #else
 #define LOGI(TAG, ...)
 #define LOGE(TAG, ...)
-#endif
+#endif // DEBUG_BUILD
 
 } // namespace abege.
 
