@@ -22,8 +22,8 @@
 
 #include "ABELogger.h"
 
-#define ABE_SHADER_CHECK_COMPILE "COMPILE"
-#define ABE_SHADER_CHECK_LINK "LINK"
+#define ABE_PROGRAM_COMPILE "PROGRAM"
+#define ABE_SHADER_COMPILE "SHADER"
 
 using std::string;
 
@@ -45,13 +45,13 @@ void ABEShader::compile(const char *vertexCode, const char *fragmentCode) {
     vertex = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex, 1, &vertexCode, NULL);
     glCompileShader(vertex);
-    checkCompileErrors(vertex, ABE_SHADER_CHECK_LINK);
+    checkCompileErrors(vertex, ABE_SHADER_COMPILE);
 
     // Compile fragment Shader.
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment, 1, &fragmentCode, NULL);
     glCompileShader(fragment);
-    checkCompileErrors(fragment, ABE_SHADER_CHECK_LINK);
+    checkCompileErrors(fragment, ABE_SHADER_COMPILE);
 
     // Compile and link shader Program.
     ID = glCreateProgram();
@@ -59,7 +59,7 @@ void ABEShader::compile(const char *vertexCode, const char *fragmentCode) {
     glAttachShader(ID, fragment);
 
     glLinkProgram(ID);
-    checkCompileErrors(ID, ABE_SHADER_CHECK_COMPILE);
+    checkCompileErrors(ID, ABE_PROGRAM_COMPILE);
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
@@ -68,18 +68,18 @@ void ABEShader::compile(const char *vertexCode, const char *fragmentCode) {
 void ABEShader::checkCompileErrors(GLuint shader, std::string type) {
     GLint success;
     GLchar infoLog[1024];
-    if (type == ABE_SHADER_CHECK_COMPILE) {
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-        if (!success) {
-            glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-            LOGE(TAG, "Compile Error! type: ", type, " ", infoLog);
-        }
-    }
-    else if (type == ABE_SHADER_CHECK_LINK){
+    if (type == ABE_PROGRAM_COMPILE) {
         glGetProgramiv(shader, GL_LINK_STATUS, &success);
         if (!success) {
             glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-            LOGE(TAG, "Link Error! type: ", type, " ", infoLog);
+            LOGE(TAG, "Program compile Error! ", infoLog);
+        }
+    }
+    else if (type == ABE_SHADER_COMPILE){
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+        if (!success) {
+            glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+            LOGE(TAG, "Shader compile Error! ", infoLog);
         }
     }
 }
@@ -91,7 +91,6 @@ string ABEShader::readFromFile(string path) {
     buffer << fileReadStream.rdbuf();
 
     fileReadStream.close();
-    LOGI(TAG, buffer.str());
 
     return buffer.str();
 }
