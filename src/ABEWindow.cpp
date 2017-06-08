@@ -25,7 +25,6 @@
 
 using std::invalid_argument;
 
-using abege::ABEShader;
 using abege::ABESceneController;
 using abege::ABEWindow;
 using abege::ABEVideoOptions;
