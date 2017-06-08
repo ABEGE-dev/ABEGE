@@ -87,10 +87,14 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
     // Dark background.
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+#ifndef NDEBUG
+    // FPS calculation variables.
     double previousTime = glfwGetTime();
     int frameCount = 0;
+#endif
 
     while(mQuitSignal == 0 && glfwWindowShouldClose(mGLFWwindow) == 0) {
+#ifndef NDEBUG
         // FPS calculation.
         double currentTime = glfwGetTime();
         frameCount++;
@@ -100,6 +104,7 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
             displayFPS(frameCount);
             frameCount = 0;
         }
+#endif
 
         // Clear the screen.
         glClear(GL_COLOR_BUFFER_BIT);
