@@ -35,7 +35,7 @@ class ABEWindow;
 /**
  * Logger.
  */
-void LOG();
+inline void LOG() {};
 
 template<typename First, typename ...Rest>
 void LOG(First &&first, Rest &&...rest) {
