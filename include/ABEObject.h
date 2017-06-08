@@ -22,15 +22,35 @@
 #include <utility>
 #include <vector>
 
+#include "ABEShader.h"
+
 #include <GL/glew.h>
 
 namespace abege {
 
 class ABEObject {
  public:
-    ABEObject(std::string name) : mName(name) {}
+    ABEObject(std::string name) : mName(name) {
+        // TODO: Remove these code.
+        GLuint VertexArrayID;
+        glGenVertexArrays(1, &VertexArrayID);
+        glBindVertexArray(VertexArrayID);
 
-    void render(GLuint vertexArrayID);
+        ABEShader *triangleShader = new ABEShader("resource/SimpleVertextShader.vs",
+                                                  "resource/SimpleVertextShader.vs");
+
+        static const GLfloat g_vertex_buffer_data[] = {
+                -1.0f, -1.0f, 0.0f,
+                1.0f, -1.0f, 0.0f,
+                0.0f,  1.0f, 0.0f,
+        };
+
+        glGenBuffers(1, &mVertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    }
+
+    void render();
 
     // Position manipulation.
     void setPosition(float x, float y);
@@ -42,6 +62,8 @@ class ABEObject {
     // TODO(Wa): add texture.
     // TODO(Wa): add shape(for collision detection).
     std::vector<std::pair<float, float>> mPositionStack = {std::make_pair(0.0, 0.0)};
+
+    GLuint mVertexBuffer;
 };
 
 } // namespace abege.

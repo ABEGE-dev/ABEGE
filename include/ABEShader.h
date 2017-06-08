@@ -21,9 +21,6 @@
 #include "GL/glew.h"
 #include "glm/glm.hpp"
 
-#include <fstream>
-#include <iostream>
-#include <sstream>
 #include <string>
 
 namespace abege {
@@ -93,6 +90,8 @@ class ABEShader {
     void compile(std::string vertexCode, std::string fragmentCode);
     void compile(const char *vertexCode, const char *fragmentCode);
     void checkCompileErrors(GLuint shader, std::string type);
+
+    std::string readFromFile(std::string path);
 };
 
 } // namespace abege.

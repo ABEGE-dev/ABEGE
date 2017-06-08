@@ -15,8 +15,11 @@
  * limitations under the License.
 */
 
-#include "ABELogger.h"
 #include "ABEShader.h"
+
+#include <fstream>
+
+#include "ABELogger.h"
 
 #define ABE_SHADER_CHECK_COMPILE "COMPILE"
 #define ABE_SHADER_CHECK_LINK "LINK"
@@ -27,11 +30,7 @@ using abege::ABEShader;
 
 ABEShader::ABEShader(const char* vertexPath,
                      const char* fragmentPath) {
-    // Load vertex/fragment source code from file.
-    string vertexCode;
-    string fragmentCode;
-
-    compile(vertexCode, fragmentCode);
+    compile(readFromFile(vertexPath), readFromFile(fragmentPath));
 }
 
 void ABEShader::compile(std::string vertexCode, std::string fragmentCode) {
@@ -82,4 +81,21 @@ void ABEShader::checkCompileErrors(GLuint shader, std::string type) {
             LOGE(TAG, "Link Error! type: ", type, " ", infoLog);
         }
     }
+}
+
+string ABEShader::readFromFile(string path) {
+    string resultString;
+
+    std::ifstream fileReadStream(path);
+
+    fileReadStream.seekg(0, std::ios::end);
+    resultString.reserve(static_cast<unsigned long>(fileReadStream.tellg()));
+    fileReadStream.seekg(0, std::ios::beg);
+
+    resultString.assign((std::istreambuf_iterator<char>(fileReadStream)),
+                        std::istreambuf_iterator<char>());
+
+    fileReadStream.close();
+
+    return resultString;
 }

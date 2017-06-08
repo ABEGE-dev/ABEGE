@@ -40,14 +40,11 @@ class ABEWindow {
     void start(ABESceneController *initialSceneController);
     void setQuit(bool quit = true);
 
-    GLuint getVertexBuffer() { return mVertexBuffer; }
  private:
     GLFWwindow *mGLFWwindow = nullptr;
     std::vector<ABESceneController *> mSceneStack = {};
     bool mQuitSignal = false;
     ABEVideoOptions *mVideoOptions = new ABEVideoOptions();
-
-    GLuint mVertexBuffer;
 
     void init(std::string title) throw(std::invalid_argument); // Base constructor.
     void doRendering();

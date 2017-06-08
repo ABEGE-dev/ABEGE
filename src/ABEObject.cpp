@@ -24,9 +24,9 @@ using std::pair;
 
 using abege::ABEObject;
 
-void ABEObject::render(GLuint vertexBuffer) {
+void ABEObject::render() {
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
     glVertexAttribPointer(
             0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
             3,                  // size

@@ -31,6 +31,6 @@ void ABESceneController::addObject(ABEObject *obj) {
 
 void ABESceneController::renderAll() {
     for (auto it = mObjectContainer.begin(); it < mObjectContainer.end(); ++it) {
-        (*it)->render(mWindow->getVertexBuffer());
+        (*it)->render();
     }
 }

@@ -46,7 +46,7 @@ void LOG(First &&first, Rest &&...rest) {
     }
 }
 
-std::string getCurrentTime() {
+inline std::string getCurrentTime() {
     time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::string current_time_string = std::ctime(&current_time);
     current_time_string.pop_back();
