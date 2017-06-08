@@ -16,6 +16,7 @@
 */
 
 #include "ABESceneController.h"
+#include "ABEWindow.h"
 
 using abege::ABESceneController;
 using abege::ABEObject;

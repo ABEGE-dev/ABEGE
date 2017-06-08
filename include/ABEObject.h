@@ -22,13 +22,17 @@
 #include <utility>
 #include <vector>
 
+#include "ABEShader.h"
+
+#include <GL/glew.h>
+
 namespace abege {
 
 class ABEObject {
  public:
-    ABEObject(std::string name) : mName(name) {}
+    ABEObject(std::string name);
 
-    virtual void render() = 0;
+    void render();
 
     // Position manipulation.
     void setPosition(float x, float y);
@@ -40,8 +44,12 @@ class ABEObject {
     // TODO(Wa): add texture.
     // TODO(Wa): add shape(for collision detection).
     std::vector<std::pair<float, float>> mPositionStack = {std::make_pair(0.0, 0.0)};
+
+    ABEShader *mShader;
+
+    GLuint mVertexBuffer;
 };
 
 } // namespace abege.
 
-#endif //ABEGE_ABEOBJECT_H
+#endif // ABEGE_ABEOBJECT_H

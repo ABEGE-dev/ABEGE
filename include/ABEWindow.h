@@ -39,6 +39,7 @@ class ABEWindow {
 
     void start(ABESceneController *initialSceneController);
     void setQuit(bool quit = true);
+
  private:
     GLFWwindow *mGLFWwindow = nullptr;
     std::vector<ABESceneController *> mSceneStack = {};
