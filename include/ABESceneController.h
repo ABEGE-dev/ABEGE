@@ -43,4 +43,4 @@ class ABESceneController {
 
 } // namespace abege.
 
-#endif //ABEGE_ABESCENECONTROLLER_H
+#endif // ABEGE_ABESCENECONTROLLER_H
