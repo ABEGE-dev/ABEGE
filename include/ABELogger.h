@@ -62,7 +62,7 @@ inline std::string getCurrentTime() {
 #else
 #define LOGI(TAG, ...)
 #define LOGE(TAG, ...)
-#endif
+#endif // DEBUG_BUILD
 
 } // namespace abege.
 
