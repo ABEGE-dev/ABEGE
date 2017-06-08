@@ -87,7 +87,20 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
     // Dark background.
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+    double previousTime = glfwGetTime();
+    int frameCount = 0;
+
     while(mQuitSignal == 0 && glfwWindowShouldClose(mGLFWwindow) == 0) {
+        // FPS calculation.
+        double currentTime = glfwGetTime();
+        frameCount++;
+        if (currentTime - previousTime >= 1.0/*second*/) {
+            previousTime = currentTime;
+
+            displayFPS(frameCount);
+            frameCount = 0;
+        }
+
         // Clear the screen.
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -114,6 +127,11 @@ void ABEWindow::setSceneController(ABESceneController *sceneController) {
 
 void ABEWindow::popSceneController() {
     mSceneStack.pop_back();
+}
+
+// Tool functions.
+void ABEWindow::displayFPS(int fps) {
+    std::cout << "FPS: " << fps << "\n";
 }
 
 // Callbacks.

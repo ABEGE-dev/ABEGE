@@ -53,6 +53,9 @@ class ABEWindow {
     void setSceneController(ABESceneController *sceneController);
     void popSceneController();
 
+    // Tool Functions.
+    void displayFPS(int fps);
+
     // Callbacks.
     static void framebufferSizeChangedCallback(GLFWwindow *window,
                                                int width, int height);
