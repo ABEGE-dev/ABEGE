@@ -18,6 +18,7 @@
 #include "ABEShader.h"
 
 #include <fstream>
+#include <sstream>
 
 #include "ABELogger.h"
 
@@ -84,18 +85,13 @@ void ABEShader::checkCompileErrors(GLuint shader, std::string type) {
 }
 
 string ABEShader::readFromFile(string path) {
-    string resultString;
-
     std::ifstream fileReadStream(path);
 
-    fileReadStream.seekg(0, std::ios::end);
-    resultString.reserve(static_cast<unsigned long>(fileReadStream.tellg()));
-    fileReadStream.seekg(0, std::ios::beg);
-
-    resultString.assign((std::istreambuf_iterator<char>(fileReadStream)),
-                        std::istreambuf_iterator<char>());
+    std::stringstream buffer;
+    buffer << fileReadStream.rdbuf();
 
     fileReadStream.close();
+    LOGI(TAG, buffer.str());
 
-    return resultString;
+    return buffer.str();
 }
