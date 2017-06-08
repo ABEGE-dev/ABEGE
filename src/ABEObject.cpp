@@ -25,7 +25,6 @@ using std::pair;
 using abege::ABEObject;
 
 void ABEObject::render(GLuint vertexBuffer) {
-    LOGI(TAG, "Rendering");
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glVertexAttribPointer(
