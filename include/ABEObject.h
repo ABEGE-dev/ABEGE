@@ -22,13 +22,15 @@
 #include <utility>
 #include <vector>
 
+#include <GL/glew.h>
+
 namespace abege {
 
 class ABEObject {
  public:
     ABEObject(std::string name) : mName(name) {}
 
-    virtual void render() = 0;
+    void render(GLuint vertexArrayID);
 
     // Position manipulation.
     void setPosition(float x, float y);
@@ -44,4 +46,4 @@ class ABEObject {
 
 } // namespace abege.
 
-#endif //ABEGE_ABEOBJECT_H
+#endif // ABEGE_ABEOBJECT_H

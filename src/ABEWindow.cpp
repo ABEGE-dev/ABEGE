@@ -87,6 +87,20 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
     // Dark background.
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+    GLuint VertexArrayID;
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+
+    static const GLfloat g_vertex_buffer_data[] = {
+            -1.0f, -1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,
+            0.0f,  1.0f, 0.0f,
+    };
+
+    glGenBuffers(1, &mVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
     while(mQuitSignal == 0 && glfwWindowShouldClose(mGLFWwindow) == 0) {
         // Clear the screen.
         glClear(GL_COLOR_BUFFER_BIT);

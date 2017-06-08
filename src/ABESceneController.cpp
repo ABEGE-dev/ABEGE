@@ -16,6 +16,7 @@
 */
 
 #include "ABESceneController.h"
+#include "ABEWindow.h"
 
 using abege::ABESceneController;
 using abege::ABEObject;
@@ -30,6 +31,6 @@ void ABESceneController::addObject(ABEObject *obj) {
 
 void ABESceneController::renderAll() {
     for (auto it = mObjectContainer.begin(); it < mObjectContainer.end(); ++it) {
-        (*it)->render();
+        (*it)->render(mWindow->getVertexBuffer());
     }
 }
