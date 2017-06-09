@@ -28,9 +28,9 @@
 
 using abege::ABETexture;
 
-void ABETexture::loadBMP(const char *imagepath) {
+void ABETexture::loadBMP(const char *imagePath) {
 
-    LOGI(TAG, "Reading image: ", imagepath);
+    LOGI(TAG, "Reading image: ", imagePath);
 
     // Data read from the header of the BMP file.
     unsigned char header[54];
@@ -41,9 +41,9 @@ void ABETexture::loadBMP(const char *imagepath) {
     unsigned char *data;
 
     // Open the file.
-    FILE *file = fopen(imagepath, "rb");
+    FILE *file = fopen(imagePath, "rb");
     if (!file) {
-        LOGE(TAG, "Failed to open: ", imagepath);
+        LOGE(TAG, "Failed to open: ", imagePath);
         return;
     }
 
@@ -65,7 +65,7 @@ void ABETexture::loadBMP(const char *imagepath) {
         return;
     }
     if (*(int*)&(header[0x1C]) != 24) {
-        LOGE("Not a correct BMP file.");
+        LOGE(TAG, "Not a correct BMP file.");
         return;
     }
 
@@ -83,22 +83,15 @@ void ABETexture::loadBMP(const char *imagepath) {
         dataPos = 54;
     }
 
-    // Create a buffer
     data = new unsigned char[imageSize];
 
     // Read the actual data from the file into the buffer.
     fread(data, 1, imageSize, file);
-
-    // Everything is in memory now, the file will be closed.
     fclose(file);
-
-    // Create one OpenGL texture.
     glGenTextures(1, &ID);
 
     // "Bind" the newly created texture : all future texture functions will modify this texture.
     glBindTexture(GL_TEXTURE_2D, ID);
-
-    // Give the image to OpenGL.
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
 
     // OpenGL has now copied the data. Free our own version.
