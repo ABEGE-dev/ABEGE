@@ -26,6 +26,7 @@
 #include <glfw3.h>
 
 #include "ABESceneController.h"
+#include "ABETextLabel.h"
 #include "ABEVideoOptions.h"
 
 namespace abege {
@@ -45,6 +46,7 @@ class ABEWindow {
     std::vector<ABESceneController *> mSceneStack = {};
     bool mQuitSignal = false;
     ABEVideoOptions *mVideoOptions = new ABEVideoOptions();
+    ABETextLabel *mFPSTextLabel;
 
     void init(std::string title) throw(std::invalid_argument); // Base constructor.
     void doRendering();

@@ -55,7 +55,12 @@ add_definitions(
 
 # Build for ABEGE Lib.
 add_library(abege
-        src/ABEWindow.cpp src/ABEObject.cpp src/ABESceneController.cpp src/ABEShader.cpp)
+        src/ABEWindow.cpp
+		src/ABEObject.cpp
+		src/ABESceneController.cpp
+		src/ABEShader.cpp
+		src/ABETextLabel.cpp
+		src/ABETexture.cpp)
 target_link_libraries(abege
         ${ALL_LIBS})
 

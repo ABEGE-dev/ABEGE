@@ -91,6 +91,9 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
     // FPS calculation variables.
     double previousTime = glfwGetTime();
     int frameCount = 0;
+
+    mFPSTextLabel = new ABETextLabel("FPSLabel", "images/Holstein.DDS");
+    mFPSTextLabel->setPosition(0, 0);
 #endif
 
     while(mQuitSignal == 0 && glfwWindowShouldClose(mGLFWwindow) == 0) {
@@ -136,7 +139,9 @@ void ABEWindow::popSceneController() {
 
 // Tool functions.
 void ABEWindow::displayFPS(int fps) {
-    std::cout << "FPS: " << fps << "\n";
+    mFPSTextLabel->setText(std::to_string(fps));
+    mFPSTextLabel->setSize(60);
+    mFPSTextLabel->render();
 }
 
 // Callbacks.

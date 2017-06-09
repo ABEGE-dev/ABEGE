@@ -40,8 +40,8 @@ ABEObject::ABEObject(std::string name) : mName(name) {
             0.0f,  1.0f, 0.0f,
     };
 
-    glGenBuffers(1, &mVertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+    glGenBuffers(1, &mVertexBufferID);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 }
 
@@ -49,7 +49,7 @@ void ABEObject::render() {
     glUseProgram(mShader->ID);
 
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
     // Draw the triangle.
