@@ -66,3 +66,9 @@ add_dependencies(SimpleExample abege)
 target_link_libraries(SimpleExample
         abege
         ${ALL_LIBS})
+
+add_custom_command(
+		TARGET SimpleExample POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+		"${PROJECT_SOURCE_DIR}/resources"
+		$<TARGET_FILE_DIR:SimpleExample>)
