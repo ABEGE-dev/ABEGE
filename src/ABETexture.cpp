@@ -17,7 +17,6 @@
 
 #include <ABELogger.h>
 #include <cstring>
-#include <stdlib.h>
 #include <malloc.h>
 #include <GL/glew.h>
 #include "ABETexture.h"
