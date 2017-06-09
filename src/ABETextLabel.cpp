@@ -22,7 +22,7 @@ using abege::ABETextLabel;
 ABETextLabel::ABETextLabel(std::string name, const char *texturePath) : ABEObject(name) {
     // Initialize texture.
     mTexture = new ABETexture();
-    mTexture->loadDDS(texturePath);
+    mTexture->loadBMP(texturePath);
 
     // Initialize VBO.
     glGenBuffers(1, &mVertexBufferID);

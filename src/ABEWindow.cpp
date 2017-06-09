@@ -93,7 +93,7 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
     int currentFPS = 0;
     int frameCount = 0;
 
-    mFPSTextLabel = new ABETextLabel("FPSLabel", "images/Holstein.DDS");
+    mFPSTextLabel = new ABETextLabel("FPSLabel", "images/consolas.bmp");
     mFPSTextLabel->setPosition(0, 580);
     mFPSTextLabel->setSize(16);
 #endif
