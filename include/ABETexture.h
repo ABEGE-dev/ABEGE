@@ -29,7 +29,7 @@ class ABETexture {
     ABETexture() {}
 
     void loadDDS(const char *imagePath);
-    void ABETexture::loadBMP(const char * imagepath);
+    void loadBMP(const char * imagepath);
 
  private:
     const std::string TAG = "ABETexture";
