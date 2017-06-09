@@ -90,6 +90,7 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
 #ifndef NDEBUG
     // FPS calculation variables.
     double previousTime = glfwGetTime();
+    int currentFPS = 0;
     int frameCount = 0;
 
     mFPSTextLabel = new ABETextLabel("FPSLabel", "images/Holstein.DDS");
@@ -108,9 +109,11 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
         if (currentTime - previousTime >= 0.2/*second*/) {
             previousTime = currentTime;
 
-            displayFPS(frameCount * 5);
+            currentFPS = frameCount * 5;
+
             frameCount = 0;
         }
+        displayFPS(currentFPS);
 #endif
 
         doRendering();
