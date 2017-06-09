@@ -26,6 +26,7 @@ add_subdirectory(external)
 include_directories(
         external/glfw-3.2.1/include/GLFW/
         external/glew-2.0.0/include/
+        external/glm-0.9.8.4/
         include/
 )
 
@@ -54,7 +55,7 @@ add_definitions(
 
 # Build for ABEGE Lib.
 add_library(abege
-        src/ABEWindow.cpp src/ABEObject.cpp src/ABESceneController.cpp)
+        src/ABEWindow.cpp src/ABEObject.cpp src/ABESceneController.cpp src/ABEShader.cpp)
 target_link_libraries(abege
         ${ALL_LIBS})
 
@@ -65,3 +66,9 @@ add_dependencies(SimpleExample abege)
 target_link_libraries(SimpleExample
         abege
         ${ALL_LIBS})
+
+add_custom_command(
+		TARGET SimpleExample POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+		"${PROJECT_SOURCE_DIR}/resources"
+		$<TARGET_FILE_DIR:SimpleExample>)

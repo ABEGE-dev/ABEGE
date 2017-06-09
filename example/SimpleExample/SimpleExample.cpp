@@ -17,23 +17,27 @@
 
 #include <iostream>
 
+#include "ABEObject.h"
 #include "ABEWindow.h"
 
 using std::cerr;
 
+using abege::ABEObject;
 using abege::ABESceneController;
 using abege::ABEWindow;
 
 int main() {
     ABEWindow *myWindow = nullptr;
     try {
-        myWindow = new ABEWindow("SimpleExample");
+        myWindow = new ABEWindow("Simple Example");
     } catch(std::invalid_argument &e) {
         cerr << "Failed to initialise ABEWindow: " << e.what() << "\n";
         return -1;
     }
 
-    ABESceneController *entrySceneController = new ABESceneController(myWindow, "Entry Scene");
+    ABESceneController *entrySceneController = new ABESceneController(myWindow, "EntryScene");
+    ABEObject *sampleObject = new ABEObject("SampleObject");
+    entrySceneController->addObject(sampleObject);
     myWindow->start(entrySceneController);
 
     delete myWindow;
