@@ -31,8 +31,8 @@ ABEObject::ABEObject(std::string name) : mName(name) {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
-    mShader = new ABEShader("resources/SimpleVertexShader.vs",
-                            "resources/SimpleFragmentShader.fs");
+    mShader = new ABEShader("shaders/SimpleVertexShader.vs",
+                            "shaders/SimpleFragmentShader.fs");
 
     static const GLfloat g_vertex_buffer_data[] = {
             -1.0f, -1.0f, 0.0f,
