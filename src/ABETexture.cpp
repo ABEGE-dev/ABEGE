@@ -101,8 +101,12 @@ void ABETexture::loadDDS(const char *imagePath) {
         width  /= 2;
         height /= 2;
 
-        if(width < 1) width = 1;
-        if(height < 1) height = 1;
+        if (width < 1) {
+            width = 1;
+        }
+        if (height < 1) {
+            height = 1;
+        }
     }
 
     free(buffer);
