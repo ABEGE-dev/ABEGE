@@ -52,20 +52,24 @@ void ABETexture::loadBMP(const char *imagePath) {
     // If less than 54 bytes are read, problem.
     if (fread(header, 1, 54, file) != 54) {
         LOGE(TAG, "Not a correct BMP file");
+        fclose(file);
         return;
     }
     // A BMP files always begins with "BM".
     if (header[0] != 'B' || header[1] != 'M') {
         LOGE(TAG, "Not a correct BMP file.");
+        fclose(file);
         return;
     }
     // Make sure this is a 24bpp file.
     if (*(int*)&(header[0x1E]) != 0) {
         LOGE(TAG, "Not a correct BMP file.");
+        fclose(file);
         return;
     }
     if (*(int*)&(header[0x1C]) != 24) {
         LOGE(TAG, "Not a correct BMP file.");
+        fclose(file);
         return;
     }
 
@@ -78,9 +82,6 @@ void ABETexture::loadBMP(const char *imagePath) {
     // Some BMP files are misformatted, guess missing information.
     if (imageSize == 0) {
         imageSize = width * height * 3;
-    } // 3 : one byte for each Red, Green and Blue component.
-    if (dataPos == 0) {
-        dataPos = 54;
     }
 
     data = new unsigned char[imageSize];
