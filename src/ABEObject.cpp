@@ -35,26 +35,40 @@ ABEObject::ABEObject(std::string name) : mName(name) {
                             "shaders/SimpleFragmentShader.fs");
 
     static const GLfloat g_vertex_buffer_data[] = {
-            -1.0f, -1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            0.0f,  1.0f, 0.0f,
+        0.5f,  0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+        -0.5f,  0.5f, 0.0f
     };
 
+    static const GLuint indices[] = {
+        0, 1, 3,
+        1, 2, 3
+    };
+
+    glGenVertexArrays(1, &mVertexArrayID);
     glGenBuffers(1, &mVertexBufferID);
+    glGenBuffers(1, &mElementBufferID);
+
+    glBindVertexArray(mVertexArrayID);
+
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mElementBufferID);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
 void ABEObject::render() {
     glUseProgram(mShader->ID);
 
     glEnableVertexAttribArray(0);
+    glBindVertexArray(mVertexArrayID);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
     // Draw the triangle.
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glDisableVertexAttribArray(0);
 }
 

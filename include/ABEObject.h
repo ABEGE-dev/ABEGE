@@ -50,7 +50,7 @@ class ABEObject {
     ABEShader *mShader;
     ABETexture *mTexture;
 
-    GLuint mVertexBufferID;
+    GLuint mVertexBufferID, mVertexArrayID, mElementBufferID;
     GLuint mUVBufferID;
     GLint mUniformID;
 };
