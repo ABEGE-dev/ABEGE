@@ -29,12 +29,10 @@
 using abege::ABETexture;
 
 void ABETexture::loadBMP(const char *imagePath) {
-
     LOGI(TAG, "Reading image: ", imagePath);
 
     // Data read from the header of the BMP file.
     unsigned char header[54];
-    unsigned int dataPos;
     unsigned int imageSize;
     unsigned int width, height;
     // Actual RGB data.
@@ -74,7 +72,6 @@ void ABETexture::loadBMP(const char *imagePath) {
     }
 
     // Read the information about the image.
-    dataPos = *(int*)&(header[0x0A]);
     imageSize = *(int*)&(header[0x22]);
     width = *(int*)&(header[0x12]);
     height = *(int*)&(header[0x16]);
