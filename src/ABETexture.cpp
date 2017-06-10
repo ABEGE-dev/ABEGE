@@ -20,13 +20,39 @@
 #include <malloc.h>
 #include <GL/glew.h>
 #include "ABETexture.h"
+#include "stb_image.h"
 
+#define STB_IMAGE_IMPLEMENTATION
 #define DDS_FILE_MAGIC "DDS "
 #define DDS_FOUR_CAPS_DXT1 0x31545844 // "DXT1" in ASCII.
 #define DDS_FOUR_CAPS_DXT3 0x33545844 // "DXT3" in ASCII.
 #define DDS_FOUR_CAPS_DXT5 0x35545844 // "DXT5" in ASCII.
 
 using abege::ABETexture;
+
+void ABETexture::addTexture(const char *imagePath) {
+    glGenTextures(1, &ID);
+    glBindTexture(GL_TEXTURE_2D, ID); 
+                              
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load(FileSystem::getPath(imagePath).c_str(), &width, &height, &nrChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else {
+        LOGE(TAG, "Failed to load texture.")
+    }
+    stbi_image_free(data);
+
+    glBindTexture(GL_TEXTURE_2D, ID);
+}
 
 void ABETexture::loadBMP(const char *imagePath) {
     LOGI(TAG, "Reading image: ", imagePath);
