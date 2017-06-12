@@ -118,7 +118,7 @@ void ABETextLabel::render() {
     float x = getX();
     float y = getY();
     std::string::const_iterator c;
-    for (c = mText.begin(); c != mText.end(); c++) {
+    for (c = mText.begin(); c != mText.end(); ++c) {
         Character ch = mCharacters[*c];
 
         GLfloat xpos = x + ch.bearing.x;

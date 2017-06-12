@@ -41,8 +41,6 @@ target_link_libraries(GLEW_200
         ${OPENGL_LIBRARY}
         ${EXTRA_LIBS})
 
-add_subdirectory(harfbuzz-1.4.6)
-
 # Build for Freetype.
 
 add_subdirectory(freetype-2.8)
