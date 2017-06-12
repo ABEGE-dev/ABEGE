@@ -17,6 +17,9 @@
 
 #include "ABETextLabel.h"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 using abege::ABETextLabel;
 
 ABETextLabel::ABETextLabel(std::string name, const char *texturePath) : ABEObject(name) {

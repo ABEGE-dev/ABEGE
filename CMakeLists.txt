@@ -28,6 +28,7 @@ include_directories(
         external/glew-2.0.0/include/
         external/glm-0.9.8.4/
         external/stb_image/
+        external/freetype-2.8/include/
         include/
 )
 
