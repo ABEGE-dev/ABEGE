@@ -62,7 +62,7 @@ ABEObject::ABEObject(std::string name) : mName(name) {
 
 void ABEObject::setTexture(const char *imagePath) {
     mTexture = new ABETexture();
-    mTexture->addTexture(imagePath);
+    mTexture->loadTexture(imagePath);
 }
 
 void ABEObject::render() {
