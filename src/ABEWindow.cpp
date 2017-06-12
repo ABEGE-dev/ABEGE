@@ -122,6 +122,8 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
         }
         displayFPS(currentFPS);
 #endif
+		glBindVertexArray(0);
+		glUseProgram(0);
 
         glfwSwapBuffers(mGLFWwindow);
         glfwPollEvents();

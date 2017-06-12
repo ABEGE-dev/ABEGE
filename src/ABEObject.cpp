@@ -54,6 +54,17 @@ ABEObject::ABEObject(std::string name) : mName(name) {
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mElementBufferID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glBindVertexArray(mVertexArrayID);
+	glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+
+	glBindVertexArray(0);
 }
 
 void ABEObject::setTexture(const char *imagePath) {
@@ -69,20 +80,14 @@ void ABEObject::render() {
         glBindTexture(GL_TEXTURE_2D, mTexture->ID);
     }
 
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glBindVertexArray(mVertexArrayID);
-    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glBindVertexArray(mVertexArrayID);
+	glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
 
     // Draw the triangle.
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
+    //glDisableVertexAttribArray(0);
+    //glDisableVertexAttribArray(1);
+    //glDisableVertexAttribArray(2);
 }
 
 void ABEObject::setPosition(float x, float y) {
