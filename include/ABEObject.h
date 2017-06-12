@@ -31,7 +31,12 @@ namespace abege {
 
 class ABEObject {
  public:
+    ABEObject() {}
     ABEObject(std::string name);
+
+    // TODO: Add setVertexes.
+    // TODO: Add addShader.
+    void setTexture(const char *imagePath);
 
     void render();
 
@@ -47,10 +52,10 @@ class ABEObject {
     // TODO(Wa): add shape(for collision detection).
     std::vector<std::pair<float, float>> mPositionStack = {std::make_pair(0.0, 0.0)};
 
-    ABEShader *mShader;
-    ABETexture *mTexture;
+    ABEShader *mShader = nullptr;
+    ABETexture *mTexture = nullptr;
 
-    GLuint mVertexBufferID;
+    GLuint mVertexBufferID, mVertexArrayID, mElementBufferID;
     GLuint mUVBufferID;
     GLint mUniformID;
 };

@@ -62,6 +62,10 @@ void ABEWindow::init(std::string title) throw(std::invalid_argument) {
     glViewport(0, 0, screenWidth, screenHeight);
 
     glfwSetFramebufferSizeCallback(mGLFWwindow, framebufferSizeChangedCallback);
+
+    // Set OpenGL options.
+    glEnable(GL_BLEND); // TODO: Figure out this mode. (Put in text label?)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 ABEWindow::ABEWindow(std::string title) throw(invalid_argument) {
@@ -93,8 +97,8 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
     int currentFPS = 0;
     int frameCount = 0;
 
-    mFPSTextLabel = new ABETextLabel("FPSLabel", "images/Holstein.DDS");
-    mFPSTextLabel->setPosition(0, 580);
+    mFPSTextLabel = new ABETextLabel("FPSLabel", "fonts/DefaultFont.ttf");
+    mFPSTextLabel->setPosition(4, 750);
     mFPSTextLabel->setSize(16);
 #endif
 
@@ -102,10 +106,13 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
         // Clear the screen.
         glClear(GL_COLOR_BUFFER_BIT);
 
+        doRendering();
+
 #ifndef NDEBUG
         // FPS calculation.
         double currentTime = glfwGetTime();
         frameCount++;
+		// TODO: Remove magic number.
         if (currentTime - previousTime >= 0.2/*second*/) {
             previousTime = currentTime;
 
@@ -115,8 +122,8 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
         }
         displayFPS(currentFPS);
 #endif
-
-        doRendering();
+        glBindVertexArray(0);
+        glUseProgram(0);
 
         glfwSwapBuffers(mGLFWwindow);
         glfwPollEvents();

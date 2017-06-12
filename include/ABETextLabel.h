@@ -20,23 +20,37 @@
 
 #include "ABEObject.h"
 
+#include <map>
 #include <string>
 
 namespace abege {
 
+struct Character {
+    GLuint textureID;   // ID handle of the glyph texture.
+    glm::ivec2 size;    // Size of glyph.
+    glm::ivec2 bearing;  // Offset from baseline to left/top of glyph.
+    GLuint advance;    // Horizontal offset to advance to next glyph.
+};
+
 class ABETextLabel : public ABEObject {
  public:
-    ABETextLabel(std::string name, const char *texturePath);
+    ABETextLabel(std::string name, const char *fontPath);
     ~ABETextLabel();
 
     void render();
 
     void setText(std::string text) { mText = text; }
     void setSize(uint16_t size) { mSize = size; }
+    void setColour(float red, float green, float blue) { mTextColour = glm::vec3(red, green, blue); }
 
  private:
+    const std::string TAG = "ABETextLabel";
+
     std::string mText;
     uint16_t mSize;
+    glm::vec3 mTextColour = glm::vec3(0.5f, 0.8f, 0.2f);
+
+    std::map<GLchar, Character> mCharacters; // TODO: Put this into a "FontLoader" and initialise in game system.
 };
 
 }

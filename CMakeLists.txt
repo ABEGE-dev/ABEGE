@@ -27,13 +27,16 @@ include_directories(
         external/glfw-3.2.1/include/GLFW/
         external/glew-2.0.0/include/
         external/glm-0.9.8.4/
+        external/stb_image/
+        external/freetype-2.8/include/
         include/
 )
 
 set(ALL_LIBS
         ${OPENGL_LIBRARY}
         glfw
-        GLEW_200)
+        GLEW_200
+        freetype)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)

@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include <GL/glew.h>
+
 namespace abege {
 
 class ABETexture {
@@ -28,8 +30,7 @@ class ABETexture {
 
     ABETexture() {}
 
-    void loadDDS(const char *imagePath);
-    void loadBMP(const char *imagePath);
+    void loadTexture(const char *imagePath);
 
  private:
     const std::string TAG = "ABETexture";
