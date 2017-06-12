@@ -101,10 +101,10 @@ ABETextLabel::ABETextLabel(std::string name, const char *fontPath) {
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
     
-    glEnableVertexAttribArray(4);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void *)0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(4);
+    glBindVertexArray(0);
 }
 
 void ABETextLabel::render() {

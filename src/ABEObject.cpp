@@ -65,6 +65,7 @@ ABEObject::ABEObject(std::string name) : mName(name) {
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ABEObject::setTexture(const char *imagePath) {
