@@ -19,10 +19,11 @@
 #include <cstring>
 #include <malloc.h>
 #include <GL/glew.h>
-#include "ABETexture.h"
-#include "stb_image.h"
-
 #define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
+#include "ABETexture.h"
+
 #define DDS_FILE_MAGIC "DDS "
 #define DDS_FOUR_CAPS_DXT1 0x31545844 // "DXT1" in ASCII.
 #define DDS_FOUR_CAPS_DXT3 0x33545844 // "DXT3" in ASCII.
@@ -41,7 +42,7 @@ void ABETexture::addTexture(const char *imagePath) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     int width, height, nrChannels;
-    unsigned char *data = stbi_load(FileSystem::getPath(imagePath).c_str(), &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load(imagePath, &width, &height, &nrChannels, 0);
     if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);

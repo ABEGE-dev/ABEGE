@@ -58,6 +58,9 @@ ABEObject::ABEObject(std::string name) : mName(name) {
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mElementBufferID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    ABETexture *texture = new ABETexture();
+    texture->addTexture("images/Logo.png");
 }
 
 void ABEObject::render() {

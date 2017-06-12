@@ -27,6 +27,7 @@ include_directories(
         external/glfw-3.2.1/include/GLFW/
         external/glew-2.0.0/include/
         external/glm-0.9.8.4/
+        external/stb_image/
         include/
 )
 
