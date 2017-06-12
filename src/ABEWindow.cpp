@@ -64,8 +64,7 @@ void ABEWindow::init(std::string title) throw(std::invalid_argument) {
     glfwSetFramebufferSizeCallback(mGLFWwindow, framebufferSizeChangedCallback);
 
     // Set OpenGL options.
-//    glEnable(GL_CULL_FACE);
-    glEnable(GL_BLEND);
+    glEnable(GL_BLEND); // TODO: Figure out this mode. (Put in text label?)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
@@ -113,6 +112,7 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
         // FPS calculation.
         double currentTime = glfwGetTime();
         frameCount++;
+		// TODO: Remove magic number.
         if (currentTime - previousTime >= 0.2/*second*/) {
             previousTime = currentTime;
 
@@ -122,8 +122,8 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
         }
         displayFPS(currentFPS);
 #endif
-		glBindVertexArray(0);
-		glUseProgram(0);
+        glBindVertexArray(0);
+        glUseProgram(0);
 
         glfwSwapBuffers(mGLFWwindow);
         glfwPollEvents();

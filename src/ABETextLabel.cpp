@@ -112,9 +112,7 @@ void ABETextLabel::render() {
     mShader->use();
     glUniform3f(glGetUniformLocation(mShader->ID, "textColor"), mTextColour.x, mTextColour.y, mTextColour.z);
     glActiveTexture(GL_TEXTURE0);
-//    glEnableVertexAttribArray(0);
     glBindVertexArray(mVertexArrayID);
-//    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
 
     // Iterate through all characters.
     float x = getX();
@@ -154,9 +152,6 @@ void ABETextLabel::render() {
         //   2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels).
         x += (ch.advance >> 6);
     }
-    //glBindVertexArray(0);
-    //glBindTexture(GL_TEXTURE_2D, 0);
-//    glDisableVertexAttribArray(0);
 }
 
 ABETextLabel::~ABETextLabel() {

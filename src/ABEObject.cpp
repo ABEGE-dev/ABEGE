@@ -86,9 +86,6 @@ void ABEObject::render() {
 
     // Draw the triangle.
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    //glDisableVertexAttribArray(0);
-    //glDisableVertexAttribArray(1);
-    //glDisableVertexAttribArray(2);
 }
 
 void ABEObject::setPosition(float x, float y) {
