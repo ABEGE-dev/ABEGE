@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.6)
 include_directories(
         glfw-3.2.1/include/GLFW/
         glew-2.0.0/include/
+        harfbuzz-1.4.6/src
         freetype-2.8/include/
 )
 
@@ -39,6 +40,8 @@ add_library(GLEW_200 STATIC
 target_link_libraries(GLEW_200
         ${OPENGL_LIBRARY}
         ${EXTRA_LIBS})
+
+add_subdirectory(harfbuzz-1.4.6)
 
 # Build for Freetype.
 
