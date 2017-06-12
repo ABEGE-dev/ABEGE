@@ -30,7 +30,6 @@ class ABETexture {
 
     ABETexture() {}
 
-    void loadDDS(const char *imagePath);
     void loadTexture(const char *imagePath);
 
  private:

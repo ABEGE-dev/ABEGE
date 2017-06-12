@@ -27,7 +27,7 @@
 
 using abege::ABETextLabel;
 
-ABETextLabel::ABETextLabel(std::string name, const char *texturePath) {
+ABETextLabel::ABETextLabel(std::string name, const char *fontPath) {
     // Initialize Shader.
     mShader = new ABEShader("shaders/DefaultTextVertexShader.vs", "shaders/DefaultTextVertexShader.fs");
     glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(1024), 0.0f, static_cast<GLfloat>(768));

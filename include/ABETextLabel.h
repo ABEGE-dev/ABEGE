@@ -34,7 +34,7 @@ struct Character {
 
 class ABETextLabel : public ABEObject {
  public:
-    ABETextLabel(std::string name, const char *texturePath);
+    ABETextLabel(std::string name, const char *fontPath);
     ~ABETextLabel();
 
     void render();
