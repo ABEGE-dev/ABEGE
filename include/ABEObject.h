@@ -31,8 +31,11 @@ namespace abege {
 
 class ABEObject {
  public:
+    ABEObject() {}
     ABEObject(std::string name);
 
+    // TODO: Add setVertexes.
+    // TODO: Add addShader.
     void setTexture(const char *imagePath);
 
     void render();

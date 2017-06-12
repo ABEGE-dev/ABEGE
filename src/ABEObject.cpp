@@ -27,10 +27,6 @@ using abege::ABEShader;
 
 ABEObject::ABEObject(std::string name) : mName(name) {
     // TODO: Remove these code.
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
-
     mShader = new ABEShader("shaders/SimpleVertexShader.vs",
                             "shaders/SimpleFragmentShader.fs");
 

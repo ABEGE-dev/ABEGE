@@ -19,96 +19,144 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "ABELogger.h"
 
 using abege::ABETextLabel;
 
-ABETextLabel::ABETextLabel(std::string name, const char *texturePath) : ABEObject(name) {
-    // Initialize texture.
-    mTexture = new ABETexture();
-    mTexture->loadDDS(texturePath);
-
-    // Initialize VBO.
-    glGenBuffers(1, &mVertexBufferID);
-    glGenBuffers(1, &mUVBufferID);
-
+ABETextLabel::ABETextLabel(std::string name, const char *texturePath) {
     // Initialize Shader.
     mShader = new ABEShader("shaders/DefaultTextVertexShader.vs", "shaders/DefaultTextVertexShader.fs");
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(1024), 0.0f, static_cast<GLfloat>(768));
+    mShader->use();
+    glUniformMatrix4fv(glGetUniformLocation(mShader->ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-    // Initialize uniforms' IDs.
-    mUniformID = glGetUniformLocation(mShader->ID, "DefaultTextureSampler");
+    FT_Library freeTypeLibrary;
+    if (FT_Init_FreeType(&freeTypeLibrary)) {
+        LOGE(TAG, "ERROR::FREETYPE: Could not init FreeType Library!");
+        return;
+    }
+
+    FT_Face face;
+    if (FT_New_Face(freeTypeLibrary, "fonts/DefaultFont.ttf", 0, &face)) {
+        LOGE(TAG, "ERROR::FREETYPE: Failed to load font!");
+        return;
+    }
+
+    FT_Set_Pixel_Sizes(face, 0, 16);
+
+    // Disable byte-alignment restriction.
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    // Load first 128 characters of ASCII set.
+    for (GLubyte c = 0; c < 128; c++) {
+        // Load character glyph.
+        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+            LOGE(TAG, "ERROR::FREETYPE: Failed to load Glyph!");
+            continue;
+        }
+        // Generate texture.
+        GLuint texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                GL_RED,
+                face->glyph->bitmap.width,
+                face->glyph->bitmap.rows,
+                0,
+                GL_RED,
+                GL_UNSIGNED_BYTE,
+                face->glyph->bitmap.buffer
+        );
+        // Set texture options.
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // Now store character for later use.
+        Character character = {
+                texture,
+                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                static_cast<GLuint>(face->glyph->advance.x)
+        };
+        mCharacters.insert(std::pair<GLchar, Character>(c, character));
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
+    // Destroy FreeType.
+    FT_Done_Face(face);
+    FT_Done_FreeType(freeTypeLibrary);
+
+    // TODO: Put this initialisations into ABEObject in a more general way.
+    glGenVertexArrays(1, &mVertexArrayID);
+    glGenBuffers(1, &mVertexBufferID);
+
+    glBindVertexArray(mVertexArrayID);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 void ABETextLabel::render() {
-    size_t length = mText.length();
-
-    // Fill buffers.
-    std::vector<glm::vec2> vertices;
-    std::vector<glm::vec2> UVs;
-    for (unsigned int i = 0; i < length; i++) {
-        float x = getX();
-        float y = getY();
-        glm::vec2 vertex_up_left = glm::vec2(x + i * mSize, y + mSize);
-        glm::vec2 vertex_up_right = glm::vec2(x + i * mSize + mSize, y + mSize);
-        glm::vec2 vertex_down_right = glm::vec2(x + i * mSize + mSize, y);
-        glm::vec2 vertex_down_left = glm::vec2(x + i * mSize, y);
-
-        vertices.push_back(vertex_up_left);
-        vertices.push_back(vertex_down_left);
-        vertices.push_back(vertex_up_right);
-
-        vertices.push_back(vertex_down_right);
-        vertices.push_back(vertex_up_right);
-        vertices.push_back(vertex_down_left);
-
-        char character = mText[i];
-        float uv_x = (character % 16) / 16.0f;
-        float uv_y = (character / 16) / 16.0f;
-
-        glm::vec2 uv_up_left = glm::vec2(uv_x, uv_y);
-        glm::vec2 uv_up_right = glm::vec2(uv_x + 1.0f / 16.0f, uv_y);
-        glm::vec2 uv_down_right = glm::vec2(uv_x + 1.0f / 16.0f, (uv_y + 1.0f / 16.0f));
-        glm::vec2 uv_down_left = glm::vec2(uv_x, (uv_y + 1.0f / 16.0f));
-        UVs.push_back(uv_up_left);
-        UVs.push_back(uv_down_left);
-        UVs.push_back(uv_up_right);
-
-        UVs.push_back(uv_down_right);
-        UVs.push_back(uv_up_right);
-        UVs.push_back(uv_down_left);
-    }
-    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec2), &vertices[0], GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, mUVBufferID);
-    glBufferData(GL_ARRAY_BUFFER, UVs.size() * sizeof(glm::vec2), &UVs[0], GL_STATIC_DRAW);
-
-    // Bind shader.
-    glUseProgram(mShader->ID);
-
-    // Bind texture.
+    // Activate corresponding render state.
+    mShader->use();
+    glUniform3f(glGetUniformLocation(mShader->ID, "textColor"), mTextColour.x, mTextColour.y, mTextColour.z);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mTexture->ID);
-    glUniform1i(mUniformID, 0);
+//    glEnableVertexAttribArray(0);
+    glBindVertexArray(mVertexArrayID);
+//    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
 
-    // 1rst attribute buffer : vertices.
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void *) 0);
+    // Iterate through all characters.
+    float x = getX();
+    float y = getY();
+    std::string::const_iterator c;
+    for (c = mText.begin(); c != mText.end(); c++) {
+        Character ch = mCharacters[*c];
 
-    // 2nd attribute buffer : UVs.
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, mUVBufferID);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void *) 0);
+        GLfloat xpos = x + ch.bearing.x;
+        GLfloat ypos = y - (ch.size.y - ch.bearing.y);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GLfloat w = ch.size.x;
+        GLfloat h = ch.size.y;
+        // Update vertex buffer object for each character.
+        GLfloat vertices[6][4] = {
+                { xpos,     ypos + h,   0.0, 0.0 },
+                { xpos,     ypos,       0.0, 1.0 },
+                { xpos + w, ypos,       1.0, 1.0 },
 
-    // Draw call.
-    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+                { xpos,     ypos + h,   0.0, 0.0 },
+                { xpos + w, ypos,       1.0, 1.0 },
+                { xpos + w, ypos + h,   1.0, 0.0 }
+        };
+        // Render glyph texture over quad.
+        glBindTexture(GL_TEXTURE_2D, ch.textureID);
+        // Update content of VBO memory.
+        glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
-    glDisable(GL_BLEND);
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // Render quad.
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // Now advance cursors for next glyph (note that advance is number of 1/64 pixels).
+        // Bit shift by 6 to get value in pixels.
+        //   2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels).
+        x += (ch.advance >> 6);
+    }
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+//    glDisableVertexAttribArray(0);
 }
 
 ABETextLabel::~ABETextLabel() {

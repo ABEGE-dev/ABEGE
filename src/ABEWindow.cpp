@@ -62,6 +62,11 @@ void ABEWindow::init(std::string title) throw(std::invalid_argument) {
     glViewport(0, 0, screenWidth, screenHeight);
 
     glfwSetFramebufferSizeCallback(mGLFWwindow, framebufferSizeChangedCallback);
+
+    // Set OpenGL options.
+//    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 ABEWindow::ABEWindow(std::string title) throw(invalid_argument) {
@@ -94,13 +99,15 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
     int frameCount = 0;
 
     mFPSTextLabel = new ABETextLabel("FPSLabel", "images/Holstein.DDS");
-    mFPSTextLabel->setPosition(0, 580);
+    mFPSTextLabel->setPosition(4, 750);
     mFPSTextLabel->setSize(16);
 #endif
 
     while(mQuitSignal == 0 && glfwWindowShouldClose(mGLFWwindow) == 0) {
         // Clear the screen.
         glClear(GL_COLOR_BUFFER_BIT);
+
+        doRendering();
 
 #ifndef NDEBUG
         // FPS calculation.
@@ -115,8 +122,6 @@ void ABEWindow::start(ABESceneController *initialSceneController) {
         }
         displayFPS(currentFPS);
 #endif
-
-        doRendering();
 
         glfwSwapBuffers(mGLFWwindow);
         glfwPollEvents();

@@ -35,7 +35,8 @@ include_directories(
 set(ALL_LIBS
         ${OPENGL_LIBRARY}
         glfw
-        GLEW_200)
+        GLEW_200
+        freetype)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
