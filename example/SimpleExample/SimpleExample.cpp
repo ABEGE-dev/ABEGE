@@ -37,6 +37,7 @@ int main() {
 
     ABESceneController *entrySceneController = new ABESceneController(myWindow, "EntryScene");
     ABEObject *sampleObject = new ABEObject("SampleObject");
+    sampleObject->setTexture("images/Logo.png");
     entrySceneController->addObject(sampleObject);
     myWindow->start(entrySceneController);
 
