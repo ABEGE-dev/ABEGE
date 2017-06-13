@@ -67,6 +67,7 @@ class ABEObject {
 
 #ifdef ABEOBJECT_DRAW_FRAME
     ABEShader *mFrameShader = nullptr;
+    GLuint mFrameVertexArrayID, mFrameElementBufferID;
 #endif
 };
 
