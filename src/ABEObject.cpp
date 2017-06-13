@@ -27,8 +27,8 @@ using abege::ABEShader;
 
 ABEObject::ABEObject(std::string name) : mName(name) {
     // TODO: Remove these code.
-    mShader = new ABEShader("shaders/SimpleVertexShader.vs",
-                            "shaders/SimpleFragmentShader.fs");
+    mShader = new ABEShader("shaders/TextureVertexShader.vs",
+                            "shaders/TextureFragmentShader.fs");
 
     static const GLfloat g_vertex_buffer_data[] = {
         // positions          // colors           // texture coordinates
@@ -62,7 +62,27 @@ ABEObject::ABEObject(std::string name) : mName(name) {
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(3 * sizeof(float)));
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>((6 * sizeof(float))));
 
-	glBindVertexArray(0);
+#ifdef ABEOBJECT_DRAW_FRAME
+    mFrameShader = new ABEShader("shaders/FrameVertexShader.vs",
+                                 "shaders/FrameFragmentShader.fs");
+
+    static const GLuint frameIndices[] = {
+            0, 1, 1, 2, 2, 3, 3, 0
+    };
+
+    glGenVertexArrays(1, &mFrameVertexArrayID);
+    glGenBuffers(1, &mFrameElementBufferID);
+
+    glBindVertexArray(mFrameVertexArrayID);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mFrameElementBufferID);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(frameIndices), frameIndices, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(0));
+#endif
+
+    glBindVertexArray(0);
 }
 
 void ABEObject::setTexture(const char *imagePath) {
@@ -71,23 +91,22 @@ void ABEObject::setTexture(const char *imagePath) {
 }
 
 void ABEObject::render() {
-    glUseProgram(mShader->ID);
-
-    if (mTexture) {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mTexture->ID);
-    }
-
-	glBindVertexArray(mVertexArrayID);
-	glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
-
-    // Draw the triangle.
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-    if (mTexture) {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
+#ifdef ABEOBJECT_DRAW_FRAME
+    renderFrame();
+#endif
 }
+
+#ifdef ABEOBJECT_DRAW_FRAME
+void ABEObject::renderFrame() {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    mFrameShader->use();
+
+    glBindVertexArray(mFrameVertexArrayID);
+
+    glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+#endif
 
 void ABEObject::setPosition(float x, float y) {
     mPositionStack.back() = make_pair(x, y);
