@@ -31,7 +31,7 @@ ABEObject::ABEObject(std::string name) : mName(name) {
                             "shaders/SimpleFragmentShader.fs");
 
     static const GLfloat g_vertex_buffer_data[] = {
-        // positions          // colors           // texture coords
+        // positions          // colors           // texture coordinates
         0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
         0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
        -0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
@@ -39,8 +39,8 @@ ABEObject::ABEObject(std::string name) : mName(name) {
     };
 
     static const GLuint indices[] = {
-        0, 1, 3,
-        1, 2, 3
+        0, 1, 2,
+        0, 2, 3
     };
 
     glGenVertexArrays(1, &mVertexArrayID);
@@ -58,14 +58,11 @@ ABEObject::ABEObject(std::string name) : mName(name) {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
-	glBindVertexArray(mVertexArrayID);
-	glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(0));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(3 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>((6 * sizeof(float))));
 
 	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ABEObject::setTexture(const char *imagePath) {
@@ -86,6 +83,10 @@ void ABEObject::render() {
 
     // Draw the triangle.
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    if (mTexture) {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 }
 
 void ABEObject::setPosition(float x, float y) {

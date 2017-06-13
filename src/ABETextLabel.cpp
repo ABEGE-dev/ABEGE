@@ -19,7 +19,6 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -30,10 +29,12 @@ using abege::ABETextLabel;
 ABETextLabel::ABETextLabel(std::string name, const char *fontPath) {
     // Initialize Shader.
     mShader = new ABEShader("shaders/DefaultTextVertexShader.vs", "shaders/DefaultTextVertexShader.fs");
+    // TODO: Remove magic number.
     glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(1024), 0.0f, static_cast<GLfloat>(768));
     mShader->use();
     glUniformMatrix4fv(glGetUniformLocation(mShader->ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
+    // TODO: Move this into a standalone font load lib.
     FT_Library freeTypeLibrary;
     if (FT_Init_FreeType(&freeTypeLibrary)) {
         LOGE(TAG, "ERROR::FREETYPE: Could not init FreeType Library!");
@@ -103,7 +104,6 @@ ABETextLabel::ABETextLabel(std::string name, const char *fontPath) {
     
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void *)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
 
@@ -147,11 +147,15 @@ void ABETextLabel::render() {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         // Render quad.
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisable(GL_BLEND);
         // Now advance cursors for next glyph (note that advance is number of 1/64 pixels).
         // Bit shift by 6 to get value in pixels.
         //   2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels).
         x += (ch.advance >> 6);
     }
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 ABETextLabel::~ABETextLabel() {
