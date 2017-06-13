@@ -27,7 +27,7 @@ class Logo : public ABEObject {
     Logo(std::string name) : ABEObject(name) {}
 
     void render() override {
-        glUseProgram(mShader->ID);
+        mShader->use();
 
         if (mTexture) {
             glActiveTexture(GL_TEXTURE0);
@@ -37,12 +37,22 @@ class Logo : public ABEObject {
         glBindVertexArray(mVertexArrayID);
         glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
 
-        // Draw the triangle.
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         if (mTexture) {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
+
+#ifdef ABEOBJECT_DRAW_FRAME
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        mFrameShader->use();
+
+        glBindVertexArray(mVertexArrayID);
+        glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif
     }
 };
 

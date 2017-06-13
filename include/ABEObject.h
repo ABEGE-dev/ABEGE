@@ -27,6 +27,8 @@
 
 #include <GL/glew.h>
 
+#define ABEOBJECT_DRAW_FRAME
+
 namespace abege {
 
 class ABEObject {
@@ -39,6 +41,10 @@ class ABEObject {
     void setTexture(const char *imagePath);
 
     virtual void render();
+
+#ifdef ABEOBJECT_DRAW_FRAME
+    void renderFrame();
+#endif
 
     // Position manipulation.
     void setPosition(float x, float y);
@@ -55,9 +61,13 @@ class ABEObject {
     ABEShader *mShader = nullptr;
     ABETexture *mTexture = nullptr;
 
-    GLuint mVertexBufferID, mVertexArrayID, mElementBufferID;
+    GLuint mVertexArrayID, mVertexBufferID, mElementBufferID;
     GLuint mUVBufferID;
     GLint mUniformID;
+
+#ifdef ABEOBJECT_DRAW_FRAME
+    ABEShader *mFrameShader = nullptr;
+#endif
 };
 
 } // namespace abege.

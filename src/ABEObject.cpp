@@ -27,8 +27,8 @@ using abege::ABEShader;
 
 ABEObject::ABEObject(std::string name) : mName(name) {
     // TODO: Remove these code.
-    mShader = new ABEShader("shaders/SimpleVertexShader.vs",
-                            "shaders/SimpleFragmentShader.fs");
+    mShader = new ABEShader("shaders/TextureVertexShader.vs",
+                            "shaders/TextureFragmentShader.fs");
 
     static const GLfloat g_vertex_buffer_data[] = {
         // positions          // colors           // texture coordinates
@@ -62,7 +62,12 @@ ABEObject::ABEObject(std::string name) : mName(name) {
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(3 * sizeof(float)));
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>((6 * sizeof(float))));
 
-	glBindVertexArray(0);
+    glBindVertexArray(0);
+
+#ifdef ABEOBJECT_DRAW_FRAME
+    mFrameShader = new ABEShader("shaders/FrameVertexShader.vs",
+                                 "shaders/FrameFragmentShader.fs");
+#endif
 }
 
 void ABEObject::setTexture(const char *imagePath) {
