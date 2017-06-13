@@ -71,22 +71,7 @@ void ABEObject::setTexture(const char *imagePath) {
 }
 
 void ABEObject::render() {
-    glUseProgram(mShader->ID);
 
-    if (mTexture) {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mTexture->ID);
-    }
-
-	glBindVertexArray(mVertexArrayID);
-	glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
-
-    // Draw the triangle.
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-    if (mTexture) {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
 }
 
 void ABEObject::setPosition(float x, float y) {

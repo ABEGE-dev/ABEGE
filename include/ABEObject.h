@@ -38,7 +38,7 @@ class ABEObject {
     // TODO: Add addShader.
     void setTexture(const char *imagePath);
 
-    void render();
+    virtual void render();
 
     // Position manipulation.
     void setPosition(float x, float y);
