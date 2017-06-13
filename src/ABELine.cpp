@@ -19,6 +19,7 @@
 #include "ABELogger.h"
 
 using abege::ABELine;
+using abege::ABELocation;
 
 ABELine::ABELine(std::string name, ABELocation start, ABELocation end, float lineWidth) {
     mName = name;
