@@ -51,9 +51,7 @@ class ABEObject {
 
     void render();
 
-#ifdef ABEOBJECT_DRAW_FRAME
     void renderFrame();
-#endif
 
     // Position manipulation.
     void setPosition(float x, float y) {

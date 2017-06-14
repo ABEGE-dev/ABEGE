@@ -39,8 +39,8 @@ void ABEObject::compile() {
     GLfloat g_vertex_buffer_data[size];
     copy(array.begin(), array.end(), g_vertex_buffer_data);
 
-    GLuint indices[mShape->getIndicesCount()];
     auto indicesVector = mShape->getIndices();
+    GLuint indices[indicesVector.size()];
     copy(indicesVector.begin(), indicesVector.end(), indices);
 
     glGenVertexArrays(1, &mVertexArrayID);
@@ -59,20 +59,17 @@ void ABEObject::compile() {
     for (GLuint i = 0; i < mShape->Attributes.size(); ++i) {
         glEnableVertexAttribArray(i);
         glVertexAttribPointer(i, mShape->Attributes[i].Stride,
-                              GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(baseStride));
+                              GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                              reinterpret_cast<GLvoid *>(baseStride * sizeof(float)));
         baseStride += mShape->Attributes[i].Stride;
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                              reinterpret_cast<GLvoid *>(3 * sizeof(float)));
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                              reinterpret_cast<GLvoid *>((6 * sizeof(float))));
     }
 
 #ifdef ABEOBJECT_DRAW_FRAME
     mFrameShader = new ABEShader("shaders/FrameVertexShader.vs",
                                  "shaders/FrameFragmentShader.fs");
 
-    GLuint frameIndices[mShape->getFrameIndicesCount()];
     auto frameIndicesVector = mShape->getFrameIndices();
+    GLuint frameIndices[frameIndicesVector.size()];
     copy(frameIndicesVector.begin(), frameIndicesVector.end(), frameIndices);
 
     glGenVertexArrays(1, &mFrameVertexArrayID);
@@ -129,14 +126,12 @@ void ABEObject::render() {
 #endif
 }
 
-#ifdef ABEOBJECT_DRAW_FRAME
 void ABEObject::renderFrame() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     mFrameShader->use();
 
     glBindVertexArray(mFrameVertexArrayID);
 
-    glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_LINES, mShape->getFrameIndicesCount(), GL_UNSIGNED_INT, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
-#endif
