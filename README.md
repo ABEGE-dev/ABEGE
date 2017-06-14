@@ -1,4 +1,4 @@
-# ABEGE
+# ABEGE The Red Comet Production
 
 | Linux Build | Windows Build | Code Quality |
 |:-----------:|:-------------:|:------------:|
