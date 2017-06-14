@@ -107,17 +107,3 @@ void ABEObject::renderFrame() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 #endif
-
-void ABEObject::setPosition(float x, float y) {
-    mPositionStack.back() = make_pair(x, y);
-}
-
-void ABEObject::pushPosition(float x, float y) {
-    mPositionStack.push_back(make_pair(x, y));
-}
-
-pair<float, float> ABEObject::popPosition() {
-    auto returnPair = mPositionStack.back();
-    mPositionStack.pop_back();
-    return returnPair;
-}

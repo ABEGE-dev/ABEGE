@@ -15,24 +15,39 @@
  * limitations under the License.
 */
 
-#ifndef ABEGE_ABELOCATION_H
-#define ABEGE_ABELOCATION_H
+#ifndef ABEGE_ABESHAPE_H
+#define ABEGE_ABESHAPE_H
 
-#include <GL/glew.h>
+#include <list>
+#include <vector>
 
-#define ABEGE_Z_NO_3D 0.0f
+#include "ABELocation.h"
 
 namespace abege {
 
-class ABELocation {
+class ABEAttribute {
  public:
-    // TODO: Currently use GL coordinate.
-    GLfloat X;
-    GLfloat Y;
-    GLfloat Z = ABEGE_Z_NO_3D;
-    ABELocation(GLfloat x, GLfloat y) : X(x), Y(y) {}
+    ABEAttribute() : Stride(0) {}
+    ABEAttribute(std::list<GLfloat> values, int stride) : Values(values), Stride(stride) {}
+
+    int Stride;
+    std::list<GLfloat> Values;
+
+    void append(ABEAttribute target);
+};
+
+class ABEShape {
+ public:
+    ABEShape(int verticesCount, std::vector<ABELocation> vertices);
+
+    void addAttribute(ABEAttribute attribute);
+
+    void fillArray(GLfloat array[]);
+
+ private:
+    std::vector<ABEAttribute> mAttributes;
 };
 
 }
 
-#endif //ABEGE_ABELOCATION_H
+#endif //ABEGE_ABESHAPE_H
