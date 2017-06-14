@@ -17,80 +17,149 @@
 
 #include "ABEShader.h"
 
-#include <fstream>
-#include <sstream>
-
-#include "ABELogger.h"
-
-#define ABE_PROGRAM_COMPILE "PROGRAM"
-#define ABE_SHADER_COMPILE "SHADER"
-
-using std::string;
+#include <iostream>
 
 using abege::ABEShader;
 
-ABEShader::ABEShader(const char* vertexPath,
-                     const char* fragmentPath) {
-    compile(readFromFile(vertexPath), readFromFile(fragmentPath));
+ABEShader &ABEShader::Use() {
+    glUseProgram(this->ID);
+    return *this;
 }
 
-void ABEShader::compile(std::string vertexCode, std::string fragmentCode) {
-    compile(vertexCode.c_str(), fragmentCode.c_str());
+void ABEShader::Compile(const GLchar *vertexSource,
+    const GLchar *fragmentSource, const GLchar *geometrySource) {
+
+    GLuint sVertex, sFragment, sGeometry;
+    // Vertex Shader.
+    sVertex = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(sVertex, 1, &vertexSource, NULL);
+    glCompileShader(sVertex);
+    checkCompileErrors(sVertex, "VERTEX");
+    // Fragment Shader.
+    sFragment = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(sFragment, 1, &fragmentSource, NULL);
+    glCompileShader(sFragment);
+    checkCompileErrors(sFragment, "FRAGMENT");
+    // Geometry Shader.
+    if (geometrySource != nullptr) {
+        sGeometry = glCreateShader(GL_GEOMETRY_SHADER);
+        glShaderSource(sGeometry, 1, &geometrySource, NULL);
+        glCompileShader(sGeometry);
+        checkCompileErrors(sGeometry, "GEOMETRY");
+    }
+    // Shader Program.
+    this->ID = glCreateProgram();
+    glAttachShader(this->ID, sVertex);
+    glAttachShader(this->ID, sFragment);
+    if (geometrySource != nullptr)
+        glAttachShader(this->ID, sGeometry);
+    glLinkProgram(this->ID);
+    checkCompileErrors(this->ID, "PROGRAM");
+    // Delete Shader.
+    glDeleteShader(sVertex);
+    glDeleteShader(sFragment);
+    if (geometrySource != nullptr) {
+        glDeleteShader(sGeometry);
+    }
 }
 
-void ABEShader::compile(const char *vertexCode, const char *fragmentCode) {
-    unsigned int vertex, fragment;
+void ABEShader::SetFloat(const GLchar *name,
+    GLfloat value, GLboolean useShader) {
 
-    // Compile vertex shader.
-    vertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex, 1, &vertexCode, NULL);
-    glCompileShader(vertex);
-    checkCompileErrors(vertex, ABE_SHADER_COMPILE);
+    if (useShader) {
+        this->Use();
+    }
+    glUniform1f(glGetUniformLocation(this->ID, name), value);
+}
+void ABEShader::SetInteger(const GLchar *name,
+    GLint value, GLboolean useShader) {
 
-    // Compile fragment Shader.
-    fragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment, 1, &fragmentCode, NULL);
-    glCompileShader(fragment);
-    checkCompileErrors(fragment, ABE_SHADER_COMPILE);
+    if (useShader) {
+        this->Use();
+    }
+    glUniform1i(glGetUniformLocation(this->ID, name), value);
+}
+void ABEShader::SetVector2f(const GLchar *name,
+    GLfloat x, GLfloat y, GLboolean useShader) {
 
-    // Compile and link shader Program.
-    ID = glCreateProgram();
-    glAttachShader(ID, vertex);
-    glAttachShader(ID, fragment);
+    if (useShader) {
+        this->Use();
+    }
+    glUniform2f(glGetUniformLocation(this->ID, name), x, y);
+}
+void ABEShader::SetVector2f(const GLchar *name,
+    const glm::vec2 &value, GLboolean useShader) {
 
-    glLinkProgram(ID);
-    checkCompileErrors(ID, ABE_PROGRAM_COMPILE);
+    if (useShader) {
+        this->Use();
+    }
+    glUniform2f(glGetUniformLocation(this->ID, name), value.x, value.y);
+}
+void ABEShader::SetVector3f(const GLchar *name,
+    GLfloat x, GLfloat y, GLfloat z, GLboolean useShader) {
 
-    glDeleteShader(vertex);
-    glDeleteShader(fragment);
+    if (useShader) {
+        this->Use();
+    }
+    glUniform3f(glGetUniformLocation(this->ID, name), x, y, z);
+}
+void ABEShader::SetVector3f(const GLchar *name,
+    const glm::vec3 &value, GLboolean useShader) {
+
+    if (useShader) {
+        this->Use();
+    }
+    glUniform3f(glGetUniformLocation(this->ID, name),
+        value.x, value.y, value.z);
+}
+void ABEShader::SetVector4f(const GLchar *name, GLfloat x,
+    GLfloat y, GLfloat z, GLfloat w, GLboolean useShader) {
+
+    if (useShader) {
+        this->Use();
+    }
+    glUniform4f(glGetUniformLocation(this->ID, name), x, y, z, w);
+}
+void ABEShader::SetVector4f(const GLchar *name,
+    const glm::vec4 &value, GLboolean useShader) {
+
+    if (useShader) {
+        this->Use();
+    }
+    glUniform4f(glGetUniformLocation(this->ID, name),
+        value.x, value.y, value.z, value.w);
+}
+void ABEShader::SetMatrix4(const GLchar *name,
+    const glm::mat4 &matrix, GLboolean useShader) {
+
+    if (useShader) {
+        this->Use();
+    }
+    glUniformMatrix4fv(glGetUniformLocation(this->ID, name),
+        1, GL_FALSE, glm::value_ptr(matrix));
 }
 
-void ABEShader::checkCompileErrors(GLuint shader, std::string type) {
+void ABEShader::checkCompileErrors(GLuint object, std::string type) {
     GLint success;
     GLchar infoLog[1024];
-    if (type == ABE_PROGRAM_COMPILE) {
-        glGetProgramiv(shader, GL_LINK_STATUS, &success);
+
+    if (type != "PROGRAM") {
+        glGetShaderiv(object, GL_COMPILE_STATUS, &success);
         if (!success) {
-            glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-            LOGE(TAG, "Program compile Error! ", infoLog);
+            glGetShaderInfoLog(object, 1024, NULL, infoLog);
+            std::cout << "| ERROR::SHADER: Compile-time error: Type: "
+                << type << "\n"
+                << infoLog << "\n -- ------------------------------- -- "
+                << std::endl;
+        }
+    } else {
+        glGetProgramiv(object, GL_LINK_STATUS, &success);
+        if (!success) {
+            glGetProgramInfoLog(object, 1024, NULL, infoLog);
+            std::cout << "| ERROR::Shader: Link-time error: Type: "
+                << type << "\n"
+                << infoLog << "\n -- ------------------------------- -- "
+                << std::endl;
         }
     }
-    else if (type == ABE_SHADER_COMPILE){
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-        if (!success) {
-            glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-            LOGE(TAG, "Shader compile Error! ", infoLog);
-        }
-    }
-}
-
-string ABEShader::readFromFile(string path) {
-    std::ifstream fileReadStream(path);
-
-    std::stringstream buffer;
-    buffer << fileReadStream.rdbuf();
-
-    fileReadStream.close();
-
-    return buffer.str();
 }

@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.6)
 include_directories(
         glfw-3.2.1/include/GLFW/
         glew-2.0.0/include/
+		soil/include
         harfbuzz-1.4.6/src
         freetype-2.8/include/
 )
@@ -44,3 +45,11 @@ target_link_libraries(GLEW_200
 # Build for Freetype.
 
 add_subdirectory(freetype-2.8)
+
+# Build for SOIL.
+
+ADD_LIBRARY(soil STATIC
+		soil/src/image_helper.c
+		soil/src/stb_image_aug.c
+		soil/src/image_DXT.c
+		soil/src/SOIL.c)

@@ -15,90 +15,23 @@
  * limitations under the License.
 */
 
-#include <iostream>
 #include "ABEObject.h"
-#include "ABELogger.h"
-
-using std::make_pair;
-using std::pair;
 
 using abege::ABEObject;
-using abege::ABEShader;
+using abege::ABERenderer;
+using abege::ABETexture2D;
 
-ABEObject::ABEObject(std::string name) : mName(name) {
-    // TODO: Remove these code.
-    mShader = new ABEShader("shaders/SimpleVertexShader.vs",
-                            "shaders/SimpleFragmentShader.fs");
+ABEObject::ABEObject()
+    : Position(0, 0), Size(1, 1),
+    Velocity(0.0f), Color(1.0f), Rotation(0.0f),
+    Texture(), IsSolid(false), Destroyed(false) {}
 
-    static const GLfloat g_vertex_buffer_data[] = {
-        // positions          // colors           // texture coordinates
-        0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-        0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-       -0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-       -0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
-    };
+ABEObject::ABEObject(glm::vec2 pos, glm::vec2 size,
+    ABETexture2D texture, glm::vec3 color, glm::vec2 velocity)
+    : Position(pos), Size(size), Velocity(velocity), Color(color),
+    Rotation(0.0f), Texture(texture), IsSolid(false), Destroyed(false) {}
 
-    static const GLuint indices[] = {
-        0, 1, 2,
-        0, 2, 3
-    };
-
-    glGenVertexArrays(1, &mVertexArrayID);
-    glGenBuffers(1, &mVertexBufferID);
-    glGenBuffers(1, &mElementBufferID);
-
-    glBindVertexArray(mVertexArrayID);
-
-    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mElementBufferID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(0));
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(3 * sizeof(float)));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>((6 * sizeof(float))));
-
-	glBindVertexArray(0);
-}
-
-void ABEObject::setTexture(const char *imagePath) {
-    mTexture = new ABETexture();
-    mTexture->loadTexture(imagePath);
-}
-
-void ABEObject::render() {
-    glUseProgram(mShader->ID);
-
-    if (mTexture) {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mTexture->ID);
-    }
-
-	glBindVertexArray(mVertexArrayID);
-	glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
-
-    // Draw the triangle.
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-    if (mTexture) {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-}
-
-void ABEObject::setPosition(float x, float y) {
-    mPositionStack.back() = make_pair(x, y);
-}
-
-void ABEObject::pushPosition(float x, float y) {
-    mPositionStack.push_back(make_pair(x, y));
-}
-
-pair<float, float> ABEObject::popPosition() {
-    auto returnPair = mPositionStack.back();
-    mPositionStack.pop_back();
-    return returnPair;
+void ABEObject::Draw(ABERenderer &renderer) {
+    renderer.Drawing(this->Texture, this->Position,
+        this->Size, this->Rotation, this->Color);
 }

@@ -15,27 +15,24 @@
  * limitations under the License.
 */
 
-#ifndef ABEGE_ABETEXTURE_H
-#define ABEGE_ABETEXTURE_H
-
-#include <string>
+#ifndef INCLUDE_ABETEXTURE_H_
+#define INCLUDE_ABETEXTURE_H_
 
 #include <GL/glew.h>
 
 namespace abege {
-
-class ABETexture {
+class ABETexture2D {
  public:
-    GLuint ID = 0;
+    GLuint ID;
+    GLuint Width, Height;
+    GLuint Internal_Format, Image_Format;
+    GLuint Wrap_S, Wrap_T;
+    GLuint Filter_Min, Filter_Max;
 
-    ABETexture() {}
-
-    void loadTexture(const char *imagePath);
-
- private:
-    const std::string TAG = "ABETexture";
+    ABETexture2D();
+    void Generate(GLuint Width, GLuint Height, unsigned char *data);
+    void Bind() const;
 };
+}  // namespace abege
 
-}
-
-#endif //ABEGE_ABETEXTURE_H
+#endif  // INCLUDE_ABETEXTURE_H_

@@ -15,85 +15,46 @@
  * limitations under the License.
 */
 
-#ifndef ABESHADER_H
-#define ABESHADER_H
+#ifndef INCLUDE_ABESHADER_H_
+#define INCLUDE_ABESHADER_H_
 
-#include "GL/glew.h"
-#include "glm/glm.hpp"
-
+#include <GL/glew.h>
 #include <string>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace abege {
 
 class ABEShader {
  public:
-    unsigned int ID;
-
+    GLuint ID;
     ABEShader() {}
-    ABEShader(const char *vertexPath, const char *fragmentPath);
+    ABEShader &Use();
+    void Compile(const GLchar *vertexSource, const GLchar *fragmentSource,
+        const GLchar *geometrySource = nullptr);
 
-    void use() {
-        glUseProgram(ID);
-    }
-
-    void setBool(const std::string &name, bool value) const {
-        glUniform1i(glGetUniformLocation(ID, name.c_str()), (int) value);
-    }
-
-    void setInt(const std::string &name, int value) const {
-        glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
-    }
-
-    void setFloat(const std::string &name, float value) const {
-        glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
-    }
-
-    void setVec2(const std::string &name, const glm::vec2 &value) const {
-        glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
-    }
-
-    void setVec2(const std::string &name, float x, float y) const {
-        glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
-    }
-
-    void setVec3(const std::string &name, const glm::vec3 &value) const {
-        glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
-    }
-
-    void setVec3(const std::string &name, float x, float y, float z) const {
-        glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
-    }
-
-    void setVec4(const std::string &name, const glm::vec4 &value) const {
-        glUniform4fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
-    }
-
-    void setVec4(const std::string &name, float x, float y, float z, float w) {
-        glUniform4f(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
-    }
-
-    void setMat2(const std::string &name, const glm::mat2 &mat) const {
-        glUniformMatrix2fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
-
-    void setMat3(const std::string &name, const glm::mat3 &mat) const {
-        glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
-
-    void setMat4(const std::string &name, const glm::mat4 &mat) const {
-        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
+    void    SetFloat(const GLchar *name, GLfloat value,
+        GLboolean useShader = false);
+    void    SetInteger(const GLchar *name, GLint value,
+        GLboolean useShader = false);
+    void    SetVector2f(const GLchar *name, GLfloat x, GLfloat y,
+        GLboolean useShader = false);
+    void    SetVector2f(const GLchar *name, const glm::vec2 &value,
+        GLboolean useShader = false);
+    void    SetVector3f(const GLchar *name, GLfloat x, GLfloat y, GLfloat z,
+        GLboolean useShader = false);
+    void    SetVector3f(const GLchar *name, const glm::vec3 &value,
+        GLboolean useShader = false);
+    void    SetVector4f(const GLchar *name, GLfloat x,
+        GLfloat y, GLfloat z, GLfloat w,
+        GLboolean useShader = false);
+    void    SetVector4f(const GLchar *name, const glm::vec4 &value,
+        GLboolean useShader = false);
+    void    SetMatrix4(const GLchar *name, const glm::mat4 &matrix,
+        GLboolean useShader = false);
 
  private:
-    const std::string TAG = "ABEShader";
-
-    void compile(std::string vertexCode, std::string fragmentCode);
-    void compile(const char *vertexCode, const char *fragmentCode);
-    void checkCompileErrors(GLuint shader, std::string type);
-
-    std::string readFromFile(std::string path);
+    void checkCompileErrors(GLuint object, std::string type);
 };
-
-} // namespace abege.
-
-#endif // ABESHADER_H
+}  // namespace abege
+#endif  // INCLUDE_ABESHADER_H_

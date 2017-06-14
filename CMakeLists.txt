@@ -29,6 +29,7 @@ include_directories(
         external/glm-0.9.8.4/
         external/stb_image/
         external/freetype-2.8/include/
+		external/soil/include
         include/
 )
 
@@ -36,6 +37,7 @@ set(ALL_LIBS
         ${OPENGL_LIBRARY}
         glfw
         GLEW_200
+		soil
         freetype)
 
 include(CheckCXXCompilerFlag)
@@ -58,12 +60,14 @@ add_definitions(
 
 # Build for ABEGE Lib.
 add_library(abege
-        src/ABEWindow.cpp
+        src/ABEGame.cpp
+		src/ABEGameLevel.cpp
 		src/ABEObject.cpp
-		src/ABESceneController.cpp
 		src/ABEShader.cpp
-		src/ABETextLabel.cpp
-		src/ABETexture.cpp)
+		src/ABETexture.cpp
+		src/ABERenderer.cpp
+		src/ABEResourceManager.cpp
+		src/ABEBallObject.cpp)
 target_link_libraries(abege
         ${ALL_LIBS})
 

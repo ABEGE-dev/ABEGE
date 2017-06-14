@@ -15,32 +15,40 @@
  * limitations under the License.
 */
 
-#ifndef INCLUDE_ABEOBJECT_H_
-#define INCLUDE_ABEOBJECT_H_
+#ifndef INCLUDE_ABEGAME_H_
+#define INCLUDE_ABEGAME_H_
 
 #include <GL/glew.h>
-#include <glm/glm.hpp>
+#include <glfw3.h>
 
-#include "ABETexture.h"
-#include "ABERenderer.h"
+#include <vector>
+
+#include "ABEGameLevel.h"
+
+enum GameState {GAME_ACTIVE, GAME_MENU, GAME_WIN};
+
+const glm::vec2 PLAYER_SIZE(100, 20);
+const GLfloat PLAYER_VELOCITY(500.0f);
 
 namespace abege {
-class ABEObject {
+
+class ABEGame {
  public:
-     glm::vec2 Position, Size, Velocity;
-     glm::vec3 Color;
-     GLfloat Rotation;
-     GLboolean IsSolid;
-     GLboolean Destroyed;
-     ABETexture2D Texture;
+    GameState State;
+    GLboolean Keys[1024];
+    GLuint Width, Height;
+    std::vector<ABEGameLevel> Levels;
+    GLuint Level;
 
-     ABEObject();
-     ABEObject(glm::vec2 pos, glm::vec2 size,
-         ABETexture2D texure, glm::vec3 color = glm::vec3(1.0f),
-         glm::vec2 velocity = glm::vec2(0.0f, 0.0f));
+    ABEGame(GLuint width, GLuint height);
+    ~ABEGame();
 
-     virtual void Draw(ABERenderer &renderer);
+    void Init();
+
+    void ProcessInput(GLfloat dt);
+    void Update(GLfloat dt);
+    void Render();
 };
-}  // namespace abege.
+}  // namespace abege
 
-#endif  // INCLUDE_ABEOBJECT_H_
+#endif  // INCLUDE_ABEGAME_H_

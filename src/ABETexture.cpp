@@ -15,35 +15,35 @@
  * limitations under the License.
 */
 
+#include "iostream"
+
 #include "ABETexture.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+using abege::ABETexture2D;
 
-#include "ABELogger.h"
+ABETexture2D::ABETexture2D() :
+    Width(0), Height(0), Internal_Format(GL_RGB), Image_Format(GL_RGB),
+    Wrap_S(GL_REPEAT), Wrap_T(GL_REPEAT),
+    Filter_Min(GL_LINEAR), Filter_Max(GL_LINEAR) {
+    glGenTextures(1, &this->ID);
+}
 
-using abege::ABETexture;
+void ABETexture2D::Generate(GLuint width, GLuint height, unsigned char *data) {
+    this->Width = width;
+    this->Height = height;
+    //  Create Texture.
+    glBindTexture(GL_TEXTURE_2D, this->ID);
+    glTexImage2D(GL_TEXTURE_2D, 0, this->Internal_Format, width, height, 0,
+        this->Image_Format, GL_UNSIGNED_BYTE, data);
+    //  Set Texture wrap and Filter mode.
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this->Wrap_S);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this->Wrap_T);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->Filter_Min);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->Filter_Max);
+    //  Unbind Texture
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
 
-void ABETexture::loadTexture(const char *imagePath) {
-    glGenTextures(1, &ID);
-    glBindTexture(GL_TEXTURE_2D, ID); 
-                              
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    stbi_set_flip_vertically_on_load(true);
-
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load(imagePath, &width, &height, &nrChannels, 0);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else {
-        LOGE(TAG, "Failed to load texture.")
-    }
-    stbi_image_free(data);
+void ABETexture2D::Bind() const {
+    glBindTexture(GL_TEXTURE_2D, this->ID);
 }
