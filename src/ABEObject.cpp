@@ -15,7 +15,9 @@
  * limitations under the License.
 */
 
+#include <algorithm>
 #include <iostream>
+
 #include "ABEObject.h"
 #include "ABELogger.h"
 
@@ -25,6 +27,8 @@ using std::pair;
 
 using abege::ABEObject;
 using abege::ABEShader;
+using abege::ABEShape;
+using abege::ABETexture;
 
 ABEObject::ABEObject(std::string name) : mName(name) {}
 
@@ -36,11 +40,11 @@ void ABEObject::compile() {
 
     size_t size;
     auto array = mShape->getArray(&size);
-    GLfloat g_vertex_buffer_data[size];
+    GLfloat *g_vertex_buffer_data = new GLfloat[size];
     copy(array.begin(), array.end(), g_vertex_buffer_data);
 
     auto indicesVector = mShape->getIndices();
-    GLuint indices[indicesVector.size()];
+    GLuint *indices = new GLuint[indicesVector.size()];
     copy(indicesVector.begin(), indicesVector.end(), indices);
 
     glGenVertexArrays(1, &mVertexArrayID);
@@ -69,7 +73,7 @@ void ABEObject::compile() {
                                  "shaders/FrameFragmentShader.fs");
 
     auto frameIndicesVector = mShape->getFrameIndices();
-    GLuint frameIndices[frameIndicesVector.size()];
+    GLuint *frameIndices = new GLuint[frameIndicesVector.size()];
     copy(frameIndicesVector.begin(), frameIndicesVector.end(), frameIndices);
 
     glGenVertexArrays(1, &mFrameVertexArrayID);

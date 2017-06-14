@@ -46,9 +46,11 @@ void ABEAttribute::append(ABEAttribute target) {
         size_t valuesSize = Values.size();
         for (int i = 0; i < valuesSize / Stride; ++i) {
             Values.insert(itInsert, targetInsertStart, targetInsertEnd);
-            advance(itInsert, Stride);
-            advance(targetInsertStart, target.Stride);
-            advance(targetInsertEnd, target.Stride);
+			if (i < valuesSize / Stride - 1) {
+				advance(itInsert, Stride);
+				advance(targetInsertStart, target.Stride);
+				advance(targetInsertEnd, target.Stride);
+			}
         }
         Stride += target.Stride;
     }
