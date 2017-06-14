@@ -26,24 +26,7 @@ using std::pair;
 using abege::ABEObject;
 using abege::ABEShader;
 
-ABEObject::ABEObject(std::string name) : mName(name) {
-    // TODO: Remove these code.
-//    mShader = new ABEShader("shaders/TextureVertexShader.vs",
-//                            "shaders/TextureFragmentShader.fs");
-//
-//    static const GLfloat g_vertex_buffer_data[] = {
-//        // positions          // colors           // texture coordinates
-//        0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-//        0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-//       -0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-//       -0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
-//    };
-//
-//    static const GLuint indices[] = {
-//        0, 1, 2,
-//        0, 2, 3
-//    };
-}
+ABEObject::ABEObject(std::string name) : mName(name) {}
 
 void ABEObject::compile() {
     if (mShape == nullptr) {
