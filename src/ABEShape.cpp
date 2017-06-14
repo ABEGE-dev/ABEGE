@@ -19,11 +19,14 @@
 
 #include <algorithm>
 #include <numeric>
+#include <ABELogger.h>
 
 using std::accumulate;
 using std::advance;
+using std::copy;
 using std::for_each;
 using std::list;
+using std::vector;
 
 using abege::ABEAttribute;
 using abege::ABELocation;
@@ -40,7 +43,8 @@ void ABEAttribute::append(ABEAttribute target) {
         auto targetInsertEnd = target.Values.begin();
         advance(targetInsertEnd, target.Stride);
 
-        for (int i = 0; i < Values.size() / Stride; ++i) {
+        size_t valuesSize = Values.size();
+        for (int i = 0; i < valuesSize / Stride; ++i) {
             Values.insert(itInsert, targetInsertStart, targetInsertEnd);
             advance(itInsert, Stride);
             advance(targetInsertStart, target.Stride);
@@ -50,7 +54,7 @@ void ABEAttribute::append(ABEAttribute target) {
     }
 }
 
-ABEShape::ABEShape(int verticesCount, std::vector<ABELocation> vertices) {
+ABEShape::ABEShape(const std::vector<ABELocation> vertices) {
     list<GLfloat> values;
     for_each(vertices.begin(), vertices.end(), [&values](const auto &location) {
         values.push_back(location.X);
@@ -58,8 +62,36 @@ ABEShape::ABEShape(int verticesCount, std::vector<ABELocation> vertices) {
         values.push_back(location.Z);
     });
     addAttribute(ABEAttribute(values, 3));
+
+    for (GLuint i = 1; i < vertices.size() - 1; ++i) {
+        mIndices.push_back(0);
+        mIndices.push_back(i);
+        mIndices.push_back(i + 1);
+    }
+
+    for (GLuint i = 0; i < vertices.size(); ++i) {
+        mFrameIndices.push_back(i);
+        mFrameIndices.push_back(i + 1);
+    }
+    mFrameIndices.pop_back();
+    mFrameIndices.push_back(0);
 }
 
 void ABEShape::addAttribute(ABEAttribute attribute) {
-    mAttributes.push_back(attribute);
+    Attributes.push_back(attribute);
+}
+
+list<GLfloat> ABEShape::getArray(size_t *size) {
+    if (Attributes.size() == 0) {
+        LOGE(TAG, "No Attributes defined.");
+        return list<GLfloat>();
+    }
+    ABEAttribute allAttributes = ABEAttribute();
+    for_each(Attributes.begin(), Attributes.end(), [&allAttributes](const auto &attribute) {
+        allAttributes.append(attribute);
+    });
+
+    *size = allAttributes.Values.size();
+
+    return allAttributes.Values;
 }

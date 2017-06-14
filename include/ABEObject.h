@@ -24,6 +24,7 @@
 
 #include "ABELocation.h"
 #include "ABEShader.h"
+#include "ABEShape.h"
 #include "ABETexture.h"
 
 #include <GL/glew.h>
@@ -37,11 +38,18 @@ class ABEObject {
     ABEObject() {}
     ABEObject(std::string name);
 
-    // TODO: Add setVertexes.
-    // TODO: Add addShader.
+    void compile();
+
+    virtual ABEShape *setShape() { return nullptr; }
+    virtual ABEShader *setShader() { return nullptr; }
+    virtual ABETexture *setTexture() { return nullptr; }
+
+    void setShape(ABEShape *shape);
+    void setShader(ABEShader *shader);
+    void setTexture(ABETexture *texture);
     void setTexture(const char *imagePath);
 
-    virtual void render();
+    void render();
 
 #ifdef ABEOBJECT_DRAW_FRAME
     void renderFrame();
@@ -53,10 +61,12 @@ class ABEObject {
     }
 
  protected:
+    const std::string TAG = "ABEObject";
     std::string mName;
     // TODO(Wa): add shape(for collision detection).
     ABELocation mPosition = ABELocation(0.0f, 0.0f);
 
+    ABEShape *mShape = nullptr;
     ABEShader *mShader = nullptr;
     ABETexture *mTexture = nullptr;
 

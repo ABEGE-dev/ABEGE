@@ -42,14 +42,7 @@ int main() {
     ABESceneController *entrySceneController = new ABESceneController(myWindow, "EntryScene");
 
     Logo *sampleObject = new Logo("SampleObject");
-    sampleObject->setTexture("images/Logo.png");
     entrySceneController->addObject(sampleObject);
-
-    ABELine *line = new ABELine("SampleLine",
-                                ABELocation(-1.0f, -1.0f),
-                                ABELocation(-1.0f, -1.0f),
-                                2.5);
-    entrySceneController->addObject(line);
 
     myWindow->start(entrySceneController);
 

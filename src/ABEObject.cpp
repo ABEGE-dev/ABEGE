@@ -19,6 +19,7 @@
 #include "ABEObject.h"
 #include "ABELogger.h"
 
+using std::copy;
 using std::make_pair;
 using std::pair;
 
@@ -27,21 +28,37 @@ using abege::ABEShader;
 
 ABEObject::ABEObject(std::string name) : mName(name) {
     // TODO: Remove these code.
-    mShader = new ABEShader("shaders/TextureVertexShader.vs",
-                            "shaders/TextureFragmentShader.fs");
+//    mShader = new ABEShader("shaders/TextureVertexShader.vs",
+//                            "shaders/TextureFragmentShader.fs");
+//
+//    static const GLfloat g_vertex_buffer_data[] = {
+//        // positions          // colors           // texture coordinates
+//        0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+//        0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+//       -0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+//       -0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
+//    };
+//
+//    static const GLuint indices[] = {
+//        0, 1, 2,
+//        0, 2, 3
+//    };
+}
 
-    static const GLfloat g_vertex_buffer_data[] = {
-        // positions          // colors           // texture coordinates
-        0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-        0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-       -0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-       -0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
-    };
+void ABEObject::compile() {
+    if (mShape == nullptr) {
+        LOGE(TAG, "No shape defined.");
+        return;
+    }
 
-    static const GLuint indices[] = {
-        0, 1, 2,
-        0, 2, 3
-    };
+    size_t size;
+    auto array = mShape->getArray(&size);
+    GLfloat g_vertex_buffer_data[size];
+    copy(array.begin(), array.end(), g_vertex_buffer_data);
+
+    GLuint indices[mShape->getIndicesCount()];
+    auto indicesVector = mShape->getIndices();
+    copy(indicesVector.begin(), indicesVector.end(), indices);
 
     glGenVertexArrays(1, &mVertexArrayID);
     glGenBuffers(1, &mVertexBufferID);
@@ -55,20 +72,25 @@ ABEObject::ABEObject(std::string name) : mName(name) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mElementBufferID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(0));
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(3 * sizeof(float)));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>((6 * sizeof(float))));
+    GLuint baseStride = 0;
+    for (GLuint i = 0; i < mShape->Attributes.size(); ++i) {
+        glEnableVertexAttribArray(i);
+        glVertexAttribPointer(i, mShape->Attributes[i].Stride,
+                              GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(baseStride));
+        baseStride += mShape->Attributes[i].Stride;
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                              reinterpret_cast<GLvoid *>(3 * sizeof(float)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                              reinterpret_cast<GLvoid *>((6 * sizeof(float))));
+    }
 
 #ifdef ABEOBJECT_DRAW_FRAME
     mFrameShader = new ABEShader("shaders/FrameVertexShader.vs",
                                  "shaders/FrameFragmentShader.fs");
 
-    static const GLuint frameIndices[] = {
-            0, 1, 1, 2, 2, 3, 3, 0
-    };
+    GLuint frameIndices[mShape->getFrameIndicesCount()];
+    auto frameIndicesVector = mShape->getFrameIndices();
+    copy(frameIndicesVector.begin(), frameIndicesVector.end(), frameIndices);
 
     glGenVertexArrays(1, &mFrameVertexArrayID);
     glGenBuffers(1, &mFrameElementBufferID);
@@ -85,12 +107,40 @@ ABEObject::ABEObject(std::string name) : mName(name) {
     glBindVertexArray(0);
 }
 
+void ABEObject::setShader(ABEShader *shader) {
+    mShader = shader;
+}
+
+void ABEObject::setShape(ABEShape *shape) {
+    mShape = shape;
+}
+
 void ABEObject::setTexture(const char *imagePath) {
     mTexture = new ABETexture();
     mTexture->loadTexture(imagePath);
 }
 
+void ABEObject::setTexture(ABETexture *texture) {
+    mTexture = texture;
+}
+
 void ABEObject::render() {
+    mShader->use();
+
+    if (mTexture) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, mTexture->ID);
+    }
+
+    glBindVertexArray(mVertexArrayID);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
+
+    glDrawElements(GL_TRIANGLES, mShape->getIndicesCount(), GL_UNSIGNED_INT, 0);
+
+    if (mTexture) {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
 #ifdef ABEOBJECT_DRAW_FRAME
     renderFrame();
 #endif

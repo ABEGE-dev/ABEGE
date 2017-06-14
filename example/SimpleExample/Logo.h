@@ -20,30 +20,51 @@
 
 #include "ABEObject.h"
 
+using abege::ABEAttribute;
+using abege::ABELocation;
 using abege::ABEObject;
+using abege::ABEShape;
+using abege::ABEShader;
+using abege::ABETexture;
 
 class Logo : public ABEObject {
  public:
-    Logo(std::string name) : ABEObject(name) {}
+    Logo(std::string name) : ABEObject(name) {
+        mShape = setShape();
+        mShader = setShader();
 
-    void render() override {
-        mShader->use();
+        compile();
 
-        if (mTexture) {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, mTexture->ID);
-        }
+        mTexture = setTexture();
+    }
 
-        glBindVertexArray(mVertexArrayID);
-        glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
+    ABEShape *setShape() override {
+        ABEShape *shape = new ABEShape({ABELocation(0.5, 0.5),
+                                        ABELocation(0.5, -0.5),
+                                        ABELocation(-0.5, -0.5),
+                                        ABELocation(-0.5, 0.5)});
+        // Colours.
+        shape->addAttribute(ABEAttribute({1.0f, 0.0f, 0.0f,
+                                          0.0f, 1.0f, 0.0f,
+                                          0.0f, 0.0f, 1.0f,
+                                          1.0f, 1.0f, 0.0f}, 3));
+        // Texture Coordinates.
+        shape->addAttribute(ABEAttribute({1.0f, 1.0f,
+                                          1.0f, 0.0f,
+                                          0.0f, 0.0f,
+                                          0.0f, 1.0f}, 2));
+        return shape;
+    }
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    ABEShader *setShader() override {
+        return new ABEShader("shaders/TextureVertexShader.vs",
+                             "shaders/TextureFragmentShader.fs");
+    }
 
-        if (mTexture) {
-            glBindTexture(GL_TEXTURE_2D, 0);
-        }
-
-        ABEObject::render();
+    ABETexture *setTexture() override {
+        ABETexture *texture = new ABETexture();
+        texture->loadTexture("images/Logo.png");
+        return texture;
     }
 };
 

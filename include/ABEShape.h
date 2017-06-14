@@ -19,6 +19,7 @@
 #define ABEGE_ABESHAPE_H
 
 #include <list>
+#include <string>
 #include <vector>
 
 #include "ABELocation.h"
@@ -38,14 +39,25 @@ class ABEAttribute {
 
 class ABEShape {
  public:
-    ABEShape(int verticesCount, std::vector<ABELocation> vertices);
+    std::vector<ABEAttribute> Attributes;
+
+    ABEShape(const std::vector<ABELocation> vertices);
 
     void addAttribute(ABEAttribute attribute);
 
-    void fillArray(GLfloat array[]);
+    std::list<GLfloat> getArray(size_t *size);
+
+    GLsizei getIndicesCount() { return mIndices.size(); }
+    std::vector<GLuint> getIndices() { return mIndices; }
+
+    GLsizei getFrameIndicesCount() { return mFrameIndices.size(); }
+    std::vector<GLuint> getFrameIndices() { return mFrameIndices; }
 
  private:
-    std::vector<ABEAttribute> mAttributes;
+    const std::string TAG = "ABEShape";
+
+    std::vector<GLuint> mIndices;
+    std::vector<GLuint> mFrameIndices;
 };
 
 }
