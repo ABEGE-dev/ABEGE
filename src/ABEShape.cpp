@@ -48,7 +48,7 @@ void ABEAttribute::append(ABEAttribute target) {
 
 ABEShape::ABEShape(const std::vector<ABELocation> vertices) {
     vector<GLfloat> values;
-    for_each(vertices.begin(), vertices.end(), [&values](const auto &location) {
+    for_each(vertices.begin(), vertices.end(), [&values](const ABELocation &location) {
         values.push_back(location.X);
         values.push_back(location.Y);
         values.push_back(location.Z);
@@ -79,7 +79,7 @@ vector<GLfloat> ABEShape::getArray(size_t *size) {
         return vector<GLfloat>();
     }
     ABEAttribute allAttributes = ABEAttribute();
-    for_each(Attributes.begin(), Attributes.end(), [&allAttributes](const auto &attribute) {
+    for_each(Attributes.begin(), Attributes.end(), [&allAttributes](const ABEAttribute &attribute) {
         allAttributes.append(attribute);
     });
 
