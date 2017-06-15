@@ -38,7 +38,8 @@ void ABEObject::compile() {
         return;
     }
 
-    auto array = mShape->getArray();
+    int totalStride;
+    auto array = mShape->getArray(&totalStride);
 
     auto indices = mShape->getIndices();
 
@@ -58,9 +59,10 @@ void ABEObject::compile() {
     for (GLuint i = 0; i < mShape->Attributes.size(); ++i) {
         glEnableVertexAttribArray(i);
         glVertexAttribPointer(i, mShape->Attributes[i].Stride,
-                              GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                              GL_FLOAT, GL_FALSE, totalStride * sizeof(GLfloat),
                               reinterpret_cast<GLvoid *>(baseStride * sizeof(float)));
         baseStride += mShape->Attributes[i].Stride;
+//        glDisableVertexAttribArray(i);
     }
 
 #ifdef ABEOBJECT_DRAW_FRAME
@@ -78,7 +80,7 @@ void ABEObject::compile() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, frameIndices.size() * sizeof(GLuint), &frameIndices.front(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, totalStride * sizeof(GLfloat), reinterpret_cast<GLvoid *>(0));
 #endif
 
     glBindVertexArray(0);

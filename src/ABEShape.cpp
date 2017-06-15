@@ -74,7 +74,7 @@ void ABEShape::addAttribute(ABEAttribute attribute) {
     Attributes.push_back(attribute);
 }
 
-vector<GLfloat> ABEShape::getArray() {
+vector<GLfloat> ABEShape::getArray(int *totalStride) {
     if (Attributes.size() == 0) {
         LOGE(TAG, "No Attributes defined.");
         return vector<GLfloat>();
@@ -83,6 +83,8 @@ vector<GLfloat> ABEShape::getArray() {
     for_each(Attributes.begin(), Attributes.end(), [&allAttributes](const ABEAttribute &attribute) {
         allAttributes.append(attribute);
     });
+
+    *totalStride = allAttributes.Stride;
 
     return allAttributes.Values;
 }
