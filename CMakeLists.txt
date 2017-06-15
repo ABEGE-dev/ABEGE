@@ -63,7 +63,7 @@ add_library(abege
 		src/ABESceneController.cpp
 		src/ABEShader.cpp
 		src/ABETextLabel.cpp
-		src/ABETexture.cpp src/ABELine.cpp)
+		src/ABETexture.cpp src/ABELine.cpp src/ABEShape.cpp)
 target_link_libraries(abege
         ${ALL_LIBS})
 

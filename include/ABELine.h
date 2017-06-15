@@ -26,8 +26,6 @@ namespace abege {
 class ABELine : public ABEObject {
  public:
     ABELine(std::string name, ABELocation start, ABELocation end, float lineWidth);
-
-    void render() override;
 };
 
 }

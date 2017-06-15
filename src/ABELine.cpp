@@ -24,7 +24,3 @@ using abege::ABELocation;
 ABELine::ABELine(std::string name, ABELocation start, ABELocation end, float lineWidth) {
     mName = name;
 }
-
-void ABELine::render() {
-    // TODO: Add stuff here.
-}

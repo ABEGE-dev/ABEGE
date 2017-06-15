@@ -115,8 +115,8 @@ void ABETextLabel::render() {
     glBindVertexArray(mVertexArrayID);
 
     // Iterate through all characters.
-    float x = getX();
-    float y = getY();
+    float x = mPosition.X;
+    float y = mPosition.Y;
     std::string::const_iterator c;
     for (c = mText.begin(); c != mText.end(); ++c) {
         Character ch = mCharacters[*c];

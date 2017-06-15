@@ -18,14 +18,19 @@
 #ifndef ABEGE_ABELOCATION_H
 #define ABEGE_ABELOCATION_H
 
+#include <GL/glew.h>
+
+#define ABEGE_Z_NO_3D 0.0f
+
 namespace abege {
 
 class ABELocation {
  public:
-    float X;
-    float Y;
-    float Z = 0.0f;
-    ABELocation(float x, float y) : X(x), Y(y) {}
+    // TODO: Currently use GL coordinate.
+    GLfloat X;
+    GLfloat Y;
+    GLfloat Z = ABEGE_Z_NO_3D;
+    ABELocation(GLfloat x, GLfloat y) : X(x), Y(y) {}
 };
 
 }
