@@ -14,3 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
+#include <iostream>
+#include <ABEWindow.h>
+
+#include "Grid.h"
+
+using std::cerr;
+
+using abege::ABELocation;
+using abege::ABEObject;
+using abege::ABESceneController;
+using abege::ABEWindow;
+
+int main() {
+    ABEWindow *myWindow = nullptr;
+    try {
+        myWindow = new ABEWindow("Simple Example");
+    } catch(std::invalid_argument &e) {
+        cerr << "Failed to initialise ABEWindow: " << e.what() << "\n";
+        return -1;
+    }
+
+    ABESceneController *entrySceneController = new ABESceneController(myWindow, "EntryScene");
+
+    Grid *grid = new Grid("SampleGrid", 10, 10);
+    entrySceneController->addObject(grid);
+
+    myWindow->start(entrySceneController);
+
+    delete myWindow, entrySceneController;
+
+    return 0;
+}

@@ -40,7 +40,7 @@ class ABEShape {
  public:
     std::vector<ABEAttribute> Attributes;
 
-    ABEShape(const std::vector<ABELocation> vertices);
+    ABEShape(const std::vector<ABELocation> vertices, const std::vector<GLuint> indices = {});
 
     void addAttribute(ABEAttribute attribute);
 

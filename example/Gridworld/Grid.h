@@ -14,7 +14,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 #ifndef ABEGE_GRID_H
 #define ABEGE_GRID_H
+
+#include "ABEObject.h"
+
+#define GRID_UPPER_BOUND 0.95
+#define GRID_LOWER_BOUND -0.95
+#define GRID_LEFT_BOUND -0.95
+#define GRID_RIGHT_BOUND 0.95
+
+using std::vector;
+
+using abege::ABEObject;
+using abege::ABELocation;
+using abege::ABEShape;
+using abege::ABEShader;
+
+class Grid : public ABEObject {
+ public:
+    Grid(std::string name, int width, int height) : ABEObject(name) {
+        float gridWidth = (GRID_RIGHT_BOUND - GRID_LEFT_BOUND) / width;
+        float gridHeight = (GRID_UPPER_BOUND - GRID_LOWER_BOUND) / height;
+        vector<ABELocation> gridVertices;
+        // Set vertical lines.
+        for (int i = 0; i < width + 1; ++i) {
+            gridVertices.push_back(ABELocation(GRID_UPPER_BOUND, GRID_LEFT_BOUND + i * gridWidth));
+            gridVertices.push_back(ABELocation(GRID_LOWER_BOUND, GRID_LEFT_BOUND + i * gridWidth));
+        }
+        // Set horizontal lines.
+        for (int i = 0; i < height + 1; ++i) {
+            gridVertices.push_back(ABELocation(GRID_LOWER_BOUND + i * gridHeight, GRID_LEFT_BOUND));
+            gridVertices.push_back(ABELocation(GRID_LOWER_BOUND + i * gridHeight, GRID_RIGHT_BOUND));
+        }
+        vector<GLuint> indices = {};
+        for (int j = 0; j < width * height * 2; ++j) {
+            indices.push_back(j);
+        }
+        mShape = new ABEShape(gridVertices, indices);
+        mShader = new ABEShader("shaders/FrameVertexShader.vs",
+                                "shaders/FrameFragmentShader.fs");
+
+        compile();
+
+        setPolygonMode(GL_LINE);
+    }
+};
 
 #endif //ABEGE_GRID_H

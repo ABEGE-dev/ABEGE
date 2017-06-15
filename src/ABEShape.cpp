@@ -47,7 +47,7 @@ void ABEAttribute::append(ABEAttribute target) {
     }
 }
 
-ABEShape::ABEShape(const std::vector<ABELocation> vertices) {
+ABEShape::ABEShape(const std::vector<ABELocation> vertices, const std::vector<GLuint> indices) {
     vector<GLfloat> values;
     for_each(vertices.begin(), vertices.end(), [&values](const ABELocation &location) {
         values.push_back(location.X);
@@ -56,18 +56,23 @@ ABEShape::ABEShape(const std::vector<ABELocation> vertices) {
     });
     addAttribute(ABEAttribute(values, 3));
 
-    for (GLuint i = 1; i < vertices.size() - 1; ++i) {
-        mIndices.push_back(0);
-        mIndices.push_back(i);
-        mIndices.push_back(i + 1);
-    }
+    if (indices.size() == 0) {
+        for (GLuint i = 1; i < vertices.size() - 1; ++i) {
+            mIndices.push_back(0);
+            mIndices.push_back(i);
+            mIndices.push_back(i + 1);
+        }
 
-    for (GLuint i = 0; i < vertices.size(); ++i) {
-        mFrameIndices.push_back(i);
-        mFrameIndices.push_back(i + 1);
+        for (GLuint i = 0; i < vertices.size(); ++i) {
+            mFrameIndices.push_back(i);
+            mFrameIndices.push_back(i + 1);
+        }
+        mFrameIndices.pop_back();
+        mFrameIndices.push_back(0);
+    } else {
+        mIndices = indices;
+        mFrameIndices = indices;
     }
-    mFrameIndices.pop_back();
-    mFrameIndices.push_back(0);
 }
 
 void ABEShape::addAttribute(ABEAttribute attribute) {
