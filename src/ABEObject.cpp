@@ -38,8 +38,7 @@ void ABEObject::compile() {
         return;
     }
 
-    size_t size;
-    auto array = mShape->getArray(&size);
+    auto array = mShape->getArray();
 
     auto indices = mShape->getIndices();
 

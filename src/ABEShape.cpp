@@ -37,10 +37,11 @@ void ABEAttribute::append(ABEAttribute target) {
         Stride = target.Stride;
     } else {
         size_t valuesSize = Values.size();
-        for (int i = 0; i < valuesSize / Stride; ++i) {
-            Values.insert(Values.begin() + (i + 1) * Stride,
-				target.Values.begin() + i * target.Stride,
-				target.Values.begin() + (i + 1) * target.Stride);
+        size_t totalInsertions = valuesSize / Stride;
+        for (int i = 0; i < totalInsertions; ++i) {
+            Values.insert(Values.begin() + (totalInsertions - i) * Stride,
+				target.Values.begin() + (totalInsertions - i - 1) * target.Stride,
+				target.Values.begin() + (totalInsertions - i) * target.Stride);
         }
         Stride += target.Stride;
     }
@@ -73,7 +74,7 @@ void ABEShape::addAttribute(ABEAttribute attribute) {
     Attributes.push_back(attribute);
 }
 
-vector<GLfloat> ABEShape::getArray(size_t *size) {
+vector<GLfloat> ABEShape::getArray() {
     if (Attributes.size() == 0) {
         LOGE(TAG, "No Attributes defined.");
         return vector<GLfloat>();
@@ -82,8 +83,6 @@ vector<GLfloat> ABEShape::getArray(size_t *size) {
     for_each(Attributes.begin(), Attributes.end(), [&allAttributes](const ABEAttribute &attribute) {
         allAttributes.append(attribute);
     });
-
-    *size = allAttributes.Values.size();
 
     return allAttributes.Values;
 }

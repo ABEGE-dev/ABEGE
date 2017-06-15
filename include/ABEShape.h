@@ -44,7 +44,7 @@ class ABEShape {
 
     void addAttribute(ABEAttribute attribute);
 
-    std::vector<GLfloat> getArray(size_t *size);
+    std::vector<GLfloat> getArray();
 
     GLsizei getIndicesCount() { return mIndices.size(); }
     std::vector<GLuint> getIndices() { return mIndices; }
