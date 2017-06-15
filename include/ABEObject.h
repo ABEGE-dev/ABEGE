@@ -58,6 +58,10 @@ class ABEObject {
         mPosition = ABELocation(x, y);
     }
 
+    void setPolygonMode(GLenum mode) {
+        mPolygonMode = mode;
+    }
+
  protected:
     const std::string TAG = "ABEObject";
     std::string mName;
@@ -76,6 +80,8 @@ class ABEObject {
     ABEShader *mFrameShader = nullptr;
     GLuint mFrameVertexArrayID, mFrameElementBufferID;
 #endif
+
+    GLenum mPolygonMode = GL_FILL;
 };
 
 } // namespace abege.

@@ -104,6 +104,8 @@ void ABEObject::setTexture(ABETexture *texture) {
 void ABEObject::render() {
     mShader->use();
 
+    glPolygonMode(GL_FRONT_AND_BACK, mPolygonMode);
+
     if (mTexture) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mTexture->ID);
@@ -112,11 +114,25 @@ void ABEObject::render() {
     glBindVertexArray(mVertexArrayID);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
 
-    glDrawElements(GL_TRIANGLES, mShape->getIndicesCount(), GL_UNSIGNED_INT, 0);
+    switch (mPolygonMode) {
+        case GL_FILL:
+            glDrawElements(GL_TRIANGLES, mShape->getIndicesCount(), GL_UNSIGNED_INT, 0);
+            break;
+        case GL_LINE:
+            glDrawElements(GL_LINES, mShape->getIndicesCount(), GL_UNSIGNED_INT, 0);
+            break;
+        case GL_POINT:
+            glDrawElements(GL_POINTS, mShape->getIndicesCount(), GL_UNSIGNED_INT, 0);
+            break;
+        default:
+            break;
+    }
 
     if (mTexture) {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 #ifdef ABEOBJECT_DRAW_FRAME
     renderFrame();
