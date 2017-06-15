@@ -114,7 +114,7 @@ void ABEObject::render() {
 
     glDrawElements(GL_TRIANGLES, mShape->getIndicesCount(), GL_UNSIGNED_INT, 0);
 
-    if (mTexture) {
+        if (mTexture) {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 

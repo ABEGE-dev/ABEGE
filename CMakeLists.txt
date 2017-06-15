@@ -53,19 +53,25 @@ else()
 endif()
 
 add_definitions(
-	-DGLEW_STATIC
+        -DGLEW_STATIC
 )
 
 # Build for ABEGE Lib.
 add_library(abege
         src/ABEWindow.cpp
-		src/ABEObject.cpp
-		src/ABESceneController.cpp
-		src/ABEShader.cpp
-		src/ABETextLabel.cpp
-		src/ABETexture.cpp src/ABELine.cpp src/ABEShape.cpp)
+        src/ABEObject.cpp
+        src/ABESceneController.cpp
+        src/ABEShader.cpp
+        src/ABETextLabel.cpp
+        src/ABETexture.cpp src/ABELine.cpp src/ABEShape.cpp)
 target_link_libraries(abege
         ${ALL_LIBS})
+
+add_custom_command(
+        TARGET abege POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_SOURCE_DIR}/resources"
+        $<TARGET_FILE_DIR:abege>)
 
 # Build Simple Example.
 add_executable(SimpleExample
@@ -75,8 +81,8 @@ target_link_libraries(SimpleExample
         abege
         ${ALL_LIBS})
 
-add_custom_command(
-		TARGET SimpleExample POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E copy_directory
-		"${PROJECT_SOURCE_DIR}/resources"
-		$<TARGET_FILE_DIR:SimpleExample>)
+# Build Gridworld.
+add_executable(Gridworld example/Gridworld/Gridworld.cpp)
+target_link_libraries(Gridworld
+        abege
+        ${ALL_LIBS})
