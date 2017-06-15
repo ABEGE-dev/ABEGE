@@ -40,12 +40,8 @@ void ABEObject::compile() {
 
     size_t size;
     auto array = mShape->getArray(&size);
-    GLfloat *g_vertex_buffer_data = new GLfloat[size];
-    copy(array.begin(), array.end(), g_vertex_buffer_data);
 
-    auto indicesVector = mShape->getIndices();
-    GLuint *indices = new GLuint[indicesVector.size()];
-    copy(indicesVector.begin(), indicesVector.end(), indices);
+    auto indices = mShape->getIndices();
 
     glGenVertexArrays(1, &mVertexArrayID);
     glGenBuffers(1, &mVertexBufferID);
@@ -54,10 +50,10 @@ void ABEObject::compile() {
     glBindVertexArray(mVertexArrayID);
 
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, array.size() * sizeof(GLfloat), &array.front(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mElementBufferID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices.front(), GL_STATIC_DRAW);
 
     GLuint baseStride = 0;
     for (GLuint i = 0; i < mShape->Attributes.size(); ++i) {
@@ -72,9 +68,7 @@ void ABEObject::compile() {
     mFrameShader = new ABEShader("shaders/FrameVertexShader.vs",
                                  "shaders/FrameFragmentShader.fs");
 
-    auto frameIndicesVector = mShape->getFrameIndices();
-    GLuint *frameIndices = new GLuint[frameIndicesVector.size()];
-    copy(frameIndicesVector.begin(), frameIndicesVector.end(), frameIndices);
+    auto frameIndices = mShape->getFrameIndices();
 
     glGenVertexArrays(1, &mFrameVertexArrayID);
     glGenBuffers(1, &mFrameElementBufferID);
@@ -82,7 +76,7 @@ void ABEObject::compile() {
     glBindVertexArray(mFrameVertexArrayID);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mFrameElementBufferID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(frameIndices), frameIndices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, frameIndices.size() * sizeof(GLuint), &frameIndices.front(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(0));

@@ -25,7 +25,6 @@ using std::accumulate;
 using std::advance;
 using std::copy;
 using std::for_each;
-using std::list;
 using std::vector;
 
 using abege::ABEAttribute;
@@ -37,27 +36,18 @@ void ABEAttribute::append(ABEAttribute target) {
         Values = target.Values;
         Stride = target.Stride;
     } else {
-        auto itInsert = Values.begin();
-        advance(itInsert, Stride);
-        auto targetInsertStart = target.Values.begin();
-        auto targetInsertEnd = target.Values.begin();
-        advance(targetInsertEnd, target.Stride);
-
         size_t valuesSize = Values.size();
         for (int i = 0; i < valuesSize / Stride; ++i) {
-            Values.insert(itInsert, targetInsertStart, targetInsertEnd);
-			if (i < valuesSize / Stride - 1) {
-				advance(itInsert, Stride);
-				advance(targetInsertStart, target.Stride);
-				advance(targetInsertEnd, target.Stride);
-			}
+            Values.insert(Values.begin() + (i + 1) * Stride,
+				target.Values.begin() + i * target.Stride,
+				target.Values.begin() + (i + 1) * target.Stride);
         }
         Stride += target.Stride;
     }
 }
 
 ABEShape::ABEShape(const std::vector<ABELocation> vertices) {
-    list<GLfloat> values;
+    vector<GLfloat> values;
     for_each(vertices.begin(), vertices.end(), [&values](const auto &location) {
         values.push_back(location.X);
         values.push_back(location.Y);
@@ -83,10 +73,10 @@ void ABEShape::addAttribute(ABEAttribute attribute) {
     Attributes.push_back(attribute);
 }
 
-list<GLfloat> ABEShape::getArray(size_t *size) {
+vector<GLfloat> ABEShape::getArray(size_t *size) {
     if (Attributes.size() == 0) {
         LOGE(TAG, "No Attributes defined.");
-        return list<GLfloat>();
+        return vector<GLfloat>();
     }
     ABEAttribute allAttributes = ABEAttribute();
     for_each(Attributes.begin(), Attributes.end(), [&allAttributes](const auto &attribute) {

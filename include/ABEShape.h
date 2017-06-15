@@ -18,7 +18,6 @@
 #ifndef ABEGE_ABESHAPE_H
 #define ABEGE_ABESHAPE_H
 
-#include <list>
 #include <string>
 #include <vector>
 
@@ -29,10 +28,10 @@ namespace abege {
 class ABEAttribute {
  public:
     ABEAttribute() : Stride(0) {}
-    ABEAttribute(std::list<GLfloat> values, int stride) : Values(values), Stride(stride) {}
+    ABEAttribute(std::vector<GLfloat> values, int stride) : Values(values), Stride(stride) {}
 
     int Stride;
-    std::list<GLfloat> Values;
+    std::vector<GLfloat> Values;
 
     void append(ABEAttribute target);
 };
@@ -45,7 +44,7 @@ class ABEShape {
 
     void addAttribute(ABEAttribute attribute);
 
-    std::list<GLfloat> getArray(size_t *size);
+    std::vector<GLfloat> getArray(size_t *size);
 
     GLsizei getIndicesCount() { return mIndices.size(); }
     std::vector<GLuint> getIndices() { return mIndices; }
