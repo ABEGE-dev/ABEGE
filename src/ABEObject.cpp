@@ -15,13 +15,11 @@
  * limitations under the License.
 */
 
-#include <algorithm>
 #include <iostream>
 
 #include "ABEObject.h"
 #include "ABELogger.h"
 
-using std::copy;
 using std::make_pair;
 using std::pair;
 
